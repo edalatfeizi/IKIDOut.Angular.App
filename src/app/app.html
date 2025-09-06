@@ -1,208 +1,24 @@
+<div class="page-wrapper compact-wrapper" id="pageWrapper">
+  <!-- Page Header Start-->
+  @if(isUserAuthorized){
+  <app-header></app-header>
 
-<div class="container-fluid">
-  <div class="page-title">
-    <div class="row">
-      <div class="col-12 col-sm-6">
-        <h3>لایه روشن</h3>
-      </div>
-      <div class="col-12 col-sm-6">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index-kit.html"> <i data-feather="home"></i></a></li>
-          <li class="breadcrumb-item">ورژن رنگی</li>
-          <li class="breadcrumb-item active">لایه روشن</li>
-        </ol>
-      </div>
-    </div>
+  }
+
+  <!-- Page Header Ends-->
+  <!-- Page Body Start-->
+  <div class="page-body-wrapper horizontal-menu">
+    <!-- Page Sidebar Start-->
+    @if(isUserAuthorized){
+    <app-sidebar></app-sidebar>
+
+    }
+    <!-- Page Sidebar Ends-->
+    <!-- <app-home></app-home> -->
+    <router-outlet></router-outlet>
+    @if(isUserAuthorized){
+    <!-- footer start-->
+    <app-footer></app-footer>
+    }
   </div>
 </div>
-<!-- Container-fluid starts-->
-<div class="container-fluid">
-  <div class="row starter-main">
-    <div class="col-sm-12">
-      <div class="card">
-        <div class="card-header pb-0">
-          <h5>توسعه پروژه خود را شروع کنید !</h5>
-        </div>
-        <div class="card-body">
-          <p>برای شروع نیازهای سفارشی پروژه خود با استفاده از یک الگوی آماده که بسیار دشوار و زمان بر است، قالب
-            مدیریتی زِتا ویژگی های مفیدی را برای شروع توسعه پروژه شما بدون هیچ تلاشی ارائه می دهد!</p>
-          <ul>
-            <li>
-              <p>قالب مدیریتی زِتا به شما این امکان را می دهد که صفحات شروع را با طرح بندی های مختلف دریافت
-                کنید، از طرح بندی مطابق با نیازهای سفارشی خود استفاده کنید و فقط نام تجاری، منو و محتوا را تغییر
-                دهید.</p>
-            </li>
-            <li>
-              <p>هر مؤلفه در زِتا ادمین جدا شده است، به این معنی که فقط از مؤلفه هایی استفاده کنید که واقعاً به
-                آنها نیاز دارید! کدهای غیر ضروری و اضافی را به راحتی با حذف مسیر به فایل CSS، JS حذف کنید.
-              </p>
-            </li>
-          </ul>
-          <div class="code-box-copy">
-            <button class="code-box-copy__btn btn-clipboard" data-clipboard-target="#example-head"
-              title="Copy"><i class="icofont icofont-copy-alt"></i></button>
-            <pre><code class="language-html" id="example-head">&lt;!-- Cod Box Copy begin --&gt;
-&lt;p&gt;برای شروع نیازهای سفارشی پروژه خود با استفاده از یک الگوی آماده که بسیار دشوار و زمان بر است، قالب مدیریتی زِتا ویژگی های مفیدی را برای شروع توسعه پروژه شما بدون هیچ تلاشی ارائه می دهد!&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;قالب مدیریتی زِتا به شما این امکان را می دهد که صفحات شروع را با طرح بندی های مختلف دریافت کنید، از طرح بندی مطابق با نیازهای سفارشی خود استفاده کنید و فقط نام تجاری، منو و محتوا را تغییر دهید.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;هر مؤلفه در زِتا ادمین جدا شده است، به این معنی که فقط از مؤلفه هایی استفاده کنید که واقعاً به آنها نیاز دارید! کدهای غیر ضروری و اضافی را به راحتی با حذف مسیر به فایل CSS، JS حذف کنید.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;!-- Cod Box Copy end --&gt;</code></pre>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-12">
-      <div class="card">
-        <div class="card-header pb-0">
-          <h5>کیت شروع چیست؟</h5>
-        </div>
-        <div class="card-body">
-          <p>کیت شروع مجموعه ای از صفحات با طرح بندی های مختلف است که برای پروژه بعدی شما مفید است تا فرآیند
-            توسعه را از ابتدا و بدون زمان شروع کنید.</p>
-          <ul>
-            <li>
-              <p>هر طرح فقط شامل اجزای اصلی است.</p>
-            </li>
-            <li>
-              <p>طرح مورد نظر خود را از کیت شروع انتخاب کنید، آن را با تغییرات اختیاری مانند رنگ ها و برند
-                سفارشی کنید، فقط وابستگی لازم را اضافه کنید.</p>
-            </li>
-            <li>
-              <p>استفاده از موتور قالب برای تولید سریع الگوی کامل با چیدمان انتخابی و سایر تغییرات سفارشی. </p>
-            </li>
-          </ul>
-          <div class="code-box-copy">
-            <button class="code-box-copy__btn btn-clipboard" data-clipboard-target="#example-head1"
-              title="Copy"><i class="icofont icofont-copy-alt"></i></button>
-            <pre><code class="language-html" id="example-head1">&lt;!-- Cod Box Copy begin --&gt;
-&lt;p&gt;کیت شروع مجموعه ای از صفحات با طرح بندی های مختلف است که برای پروژه بعدی شما مفید است تا فرآیند توسعه را از ابتدا و بدون زمان شروع کنید. &lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;هر طرح فقط شامل اجزای اصلی است.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;طرح مورد نظر خود را از کیت شروع انتخاب کنید، آن را با تغییرات اختیاری مانند رنگ ها و برند سفارشی کنید، فقط وابستگی لازم را اضافه کنید.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;استفاده از موتور قالب برای تولید سریع الگوی کامل با چیدمان انتخابی و سایر تغییرات سفارشی.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;!-- Cod Box Copy end --&gt;</code></pre>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-12">
-      <div class="card">
-        <div class="card-header pb-0">
-          <h5>چگونه از کیت شروع استفاده کنیم؟</h5>
-        </div>
-        <div class="card-body">
-          <p><span class="f-w-600">HTML</span></p>
-          <p>اگر فقط HTML می دانید، طرح مورد نظر خود را از پوشه کیت شروع انتخاب کنید، آن را با تغییرات اختیاری
-            مانند رنگ ها و نام تجاری سفارشی کنید، فقط وابستگی لازم را اضافه کنید.</p>گزینه hideable navbar فقط
-          برای نوار ناوبری ثابت با ناوبری استاتیک در دسترس است. در موقعیت های بالا و پایین، نوارهای ناوبری تک و
-          چندگانه کار می کند.
-          <div class="alert alert-primary inverse mt-3" role="alert"><i class="icon-info-alt"></i>
-            <h5>نکته !</h5>
-            <p>گزینه hideable navbar فقط برای نوار ناوبری ثابت با ناوبری استاتیک در دسترس است. در موقعیت های
-              بالا و پایین، نوارهای ناوبری تک و چندگانه کار می کند.</p>
-          </div>
-          <div class="code-box-copy">
-            <button class="code-box-copy__btn btn-clipboard" data-clipboard-target="#example-head2"
-              title="Copy"><i class="icofont icofont-copy-alt"></i></button>
-            <pre><code class="language-html" id="example-head2">&lt;!-- Cod Box Copy begin --&gt;
-&lt;p&gt;&lt;span class="f-w-600"&gt;HTML&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;اگر فقط HTML می دانید، طرح مورد نظر خود را از پوشه کیت شروع انتخاب کنید، آن را با تغییرات اختیاری مانند رنگ ها و نام تجاری سفارشی کنید، فقط وابستگی لازم را اضافه کنید.&lt;/p&gt;
-&lt;div class="alert alert-primary inverse" role="alert"&gt;
-&lt;i class="icon-info-alt"&gt;&lt;/i&gt;
-&lt;h5&gt;Tips!&lt;/h5&gt;
-&lt;p&gt;گزینه hideable navbar فقط برای نوار ناوبری ثابت با ناوبری استاتیک در دسترس است. در موقعیت های بالا و پایین، نوارهای ناوبری تک و چندگانه کار می کند.&lt;/p&gt;
-&lt;/div&gt;
-&lt;!-- Cod Box Copy end --&gt;</code></pre>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-12">
-      <div class="card">
-        <div class="card-header pb-0">
-          <h5>کارت ساده</h5>
-        </div>
-        <div class="card-body">
-          <h6>متن HTML پیش فرض</h6>
-          <p><strong>لورم ایپسوم متن ساختگی با تولید سادگی</strong> لورم ایپسوم متن ساختگی با تولید سادگی
-            نامفهوم، لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم، لورم ایپسوم متن ساختگی با تولید سادگی
-            نامفهوم. <em>لورم ایپسوم متن ساختگی صنعت چاپ</em> لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم،
-            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم، <code>لورم ایپسوم</code>، لورم ایپسوم متن ساختگی با
-            تولید سادگی نامفهوم، لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم. <a href="#">متن ساختگی
-              نامفهوم</a>
-            لورم ایپسوم متن ساختگی نامفهوم صنعت چاپ.
-          </p>
-          <h6>هدر سطح 2</h6>
-          <ol>
-            <li>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم در صنعت چاپ.</li>
-            <li>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم.</li>
-          </ol>
-          <div class="figure d-block">
-            <blockquote class="blockquote">
-              <p>
-                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم، لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم
-                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم، لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم
-                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم، لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم،
-                لورم ایپسوم متن ساختگی با تولید سادگی.
-              </p>
-            </blockquote>
-          </div>
-          <h4>هدر سطح<span> 3</span></h4>
-          <ul>
-            <li>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم در صنعت چاپ.</li>
-            <li>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم.</li>
-          </ul>
-          <pre>#header h1 a {{'{'}}
-display: block;
-width: 300px;
-height: 80px;
-{{'}'}}</pre>
-          <dl>
-            <dt>لیست تعریف</dt>
-            <dd>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم، لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم
-              لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم، لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم در
-              صنعت چاپ</dd>
-            <dt>لورم ایپسوم متن ساختگی نامفهوم</dt>
-            <dd>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم، لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم
-              لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم، لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم در
-              صنعت چاپ</dd>
-          </dl>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header pb-0">
-          <h5>با هدر</h5>
-        </div>
-        <div class="card-body">
-          <h5>عنوان محتوا</h5>
-          <p>عنوانی را با کلاس <code>.card-header</code> به کارت اضافه کنید</p>
-          <p>همچنین می‌توانید هر &lt;h1&gt;-&lt;h6&gt; را با کلاس <code>.card-header </code> و
-            <code>.card-title</code> برای اضافه کردن عنوان اضافه کنید.</p>
-          <p>سوفله کیک جو دوسر کیک پنیر لوبیا ژله. کیک هویج تارت آلو قند. لوبیای ژله ای تیرامیسو ویفر مارشمالو.
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header pb-0 card-no-border">
-          <h5>با هدر بدون خط مرز</h5>
-        </div>
-        <div class="card-body">
-          <h5>عنوان محتوا</h5>
-          <p>عنوان را با کلاس <code>.card-header</code> به کارت اضافه کنید و برای هدر بدون مرز کلاس
-            <code>.border-bottom-0</code> را اضافه کنید.</p>
-          <p>همچنین می‌توانید هر &lt;h1&gt;-&lt;h6&gt; را با کلاس <code>.card-header </code> و
-            <code>.card-title</code> برای اضافه کردن عنوان اضافه کنید.</p>
-          <p>شیرینی زنجفیلی براونی شیرین رول چیزکیک کیک شکلاتی ژله لوبیا مارزیپان دسر صمغی. سوفله کیک جو دوسر
-            کیک پنیر لوبیا ژله.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<router-outlet />

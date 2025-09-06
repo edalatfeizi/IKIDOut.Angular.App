@@ -1,0 +1,7 @@
+.hand-cursor {
+    cursor :pointer;
+}
+
+.ltr-dir {
+    direction: ltr;
+}

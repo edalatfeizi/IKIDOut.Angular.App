@@ -1,0 +1,48 @@
+.loader-box {
+    height: 30px;
+    text-align: center;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    vertical-align: middle;
+    -webkit-box-pack: center;
+    justify-content: center;
+    transition: color 0.3s, border 0.3s, transform 0.3s, opacity 0.3s, -webkit-transform 0.3s;
+}
+
+.loader-box .loader-7 {
+    border: 0 solid transparent;
+    border-radius: 50%;
+    position: relative;
+}
+
+.loader-box [class*="loader-"] {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    color: white;
+    vertical-align: middle;
+}
+
+.loader-box .loader-7:before, .loader-box .loader-7:after
+ {
+    content: "";
+    border: 0.2em solid #c1c1ff;
+    border-radius: 50%;
+    width: inherit;
+    height: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-animation: loader-07 1s linear infinite;
+    animation: loader-07 1s linear infinite;
+    opacity: 0;
+}
+/* .btn {
+    padding: 0px;
+} */
+
+.pointer-events-none {
+    pointer-events: none;
+    opacity: 0.6; /* look disabled */
+  }
