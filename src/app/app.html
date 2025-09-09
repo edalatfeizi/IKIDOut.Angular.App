@@ -1,4 +1,5 @@
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
+   <!-- Toast Message  Start-->
   <div class="container-fluid">
     <div class="todo">
       <div
@@ -7,11 +8,12 @@
         [class.toast-success]="(toastType$ | async) === toastTypes.SUCCESS"
         [class.toast-warning]="(toastType$ | async) === toastTypes.WARNING"
         [class.toast-error]="(toastType$ | async) === toastTypes.DANGER"
-        [class.toast-info]="(toastType$ | async) === toastTypes.DEFAULT"
+        [class.toast-info]="(toastType$ | async) === toastTypes.INFO"
+        [class.toast-default]="(toastType$ | async) === toastTypes.DEFAULT"
       >
         <i class="fa" 
         [class.fa-times]="(toastType$ | async) === toastTypes.DANGER" 
-        [class.fa-info]="(toastType$ | async) === toastTypes.DEFAULT" 
+        [class.fa-info]="(toastType$ | async) === toastTypes.INFO" 
         [class.fa-warning]="(toastType$ | async) === toastTypes.WARNING" 
         [class.fa-check]="(toastType$ | async) === toastTypes.SUCCESS" 
         ></i>
@@ -21,6 +23,7 @@
       </div>
     </div>
   </div>
+   <!-- Toast Message End-->
   <!-- <div class="container-fluid">
     <div class="todo">
         
@@ -30,7 +33,7 @@
     </div>
   </div> -->
   <!-- Page Header Start-->
-  @if(isUserAuthorized){
+  @if(checkUserAuthorized()){
   <app-header></app-header>
 
   }
@@ -39,14 +42,14 @@
   <!-- Page Body Start-->
   <div class="page-body-wrapper horizontal-menu">
     <!-- Page Sidebar Start-->
-    @if(isUserAuthorized){
+    @if(checkUserAuthorized()){
     <app-sidebar></app-sidebar>
 
     }
     <!-- Page Sidebar Ends-->
     <!-- <app-home></app-home> -->
     <router-outlet></router-outlet>
-    @if(isUserAuthorized){
+    @if(checkUserAuthorized()){
     <!-- footer start-->
     <app-footer></app-footer>
     }

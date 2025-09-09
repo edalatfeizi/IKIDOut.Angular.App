@@ -76,6 +76,7 @@ export const MSG_DELETE_USER_ROLE_PROMPT = 'آیا برای حذف نقش کار
 /**
  * Server Errors
  */
+export const ERR_CANNOT_CONNECT_SERVER = 'خطا در پردازش اطلاعات!'
 export const ERR_INTERNAL_SERVER = 'خطا در پردازش اطلاعات!'
 export const ERR_PRINT_FUNCTIONALITY_DISABLED =
   'امکان پرینت گرفتن از صفحه غیر فعال شده است!'

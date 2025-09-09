@@ -8,7 +8,7 @@ export interface ToastState {
 }
 
 export const initialState: ToastState = {
-  toastType: ToastTypes.DEFAULT,
+  toastType: ToastTypes.INFO,
   message: null,
 };
 
@@ -24,6 +24,6 @@ export const toastReducer = createReducer(
   on(ToastActions.clearToastMessage, (state) => ({
     ...state,
     message: null,
-    toastType: ToastTypes.DEFAULT, // optional but recommended
+    toastType: ToastTypes.INFO, // optional but recommended
   }))
 );

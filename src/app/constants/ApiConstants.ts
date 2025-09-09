@@ -1,7 +1,7 @@
 import { isDevMode } from '@angular/core'
 
 export const BaseUrl = isDevMode()
-  ? 'https://localhost:7036/'
+  ? 'https://localhost:7037/'
   : 'http://ikidout.ikidmis.com/'
 // export const BaseUrl = 'http://localhost:5108/'
 // export const BaseUrl = 'https://localhost:7037/'

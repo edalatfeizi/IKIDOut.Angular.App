@@ -3,11 +3,11 @@
 }
 
 .ltr-dir {
-    direction: ltr;
+    direction: ltr !important;
 }
 
 .rtl-dir {
-    direction: rtl;
+    direction: rtl !important;
 }
 
 .pointer-events-none {
@@ -34,6 +34,11 @@
     background-color: #ff8819 !important;
     border-color: #ff8819 !important;
   }
+  .toast-default{
+    background-color: #6362e7cc !important;
+    border-color: #6362e7cc !important;
+  }
+  
   .toast-message {
     margin: 5px;
   }

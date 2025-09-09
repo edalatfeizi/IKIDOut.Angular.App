@@ -27,7 +27,7 @@ import { clearToastMessage, showToast } from './states/actions/toast.actions';
 export class App implements OnInit, OnDestroy {
   protected readonly title = signal('IKIDOut.Angular.App');
   storageService = inject(StorageService);
-  isUserAuthorized = this.storageService.isConfirmed() && this.storageService.isPassChanged();
+
   unsubscribeAuthState$ = new Subject<void>();
   toastModel: ToastState | null = null;
   private store = inject(Store);
@@ -53,7 +53,7 @@ export class App implements OnInit, OnDestroy {
     //   });
   
   }
-
+  
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -75,5 +75,8 @@ export class App implements OnInit, OnDestroy {
     this.store.dispatch(
       showToast({ toastModel: { toastType: ToastTypes.DANGER, message: 'Login failed' } })
     );
+  }
+  checkUserAuthorized(){
+    return this.storageService.isConfirmed() && this.storageService.isPassChanged();
   }
 }

@@ -1,0 +1,162 @@
+<section>
+  <div class="container-fluid">
+    <div class="row">
+      <div
+        class="col-xl-7 b-center bg-size"
+        style="
+          background-image: url('../assets/images/login/2.jpg');
+          background-size: cover;
+          background-position: center center;
+          display: block;
+        "
+      >
+        <img
+          class="bg-img-cover bg-center"
+          src="../assets/images/login/2.jpg"
+          alt="looginpage"
+          style="display: none"
+        />
+      </div>
+
+      <div class="col-xl-5 p-0">
+        <div class="login-card">
+          <div class="theme-form login-form">
+            <div class="form-group">
+                <div title="کد تایید ارسال شده به شماره همراه خود را وارد کنید.">کد تایید ارسال شده به شماره 
+                    <span class="partially-span blue">{{mobile}}</span>
+                    را وارد کنید.</div>
+                    <br>
+                    <div title="پس از وارد نمودن کد بر روی دکمه تایید کلیک کنید.">پس از وارد نمودن
+                      <span class="partially-span blue"> کد تایید </span>
+                      به صورت خودکار وارد سامانه خواهید شد.</div>
+            </div>
+            <div class="form-group">
+                
+              <div class="row justify-content-center align-items-center ltr-dir">
+                <div class="col">
+                  <input
+                    class="form-control text-center opt-text"
+                    type="tel"
+                    placeholder=""
+                    inputmode="numeric"
+                    maxlength="1"
+                    [(ngModel)]="confirmCode[0]"
+                    onkeypress="return /[0-9]/i.test(event.key)"
+                    (input)="moveToNext(confirmCode1, confirmCode2); validate()"
+                    #confirmCode1
+                    (keydown)="handleBackspace($event, 0, confirmCode1, null)"
+                  />
+                </div>
+                -
+                <div class="col">
+                  <input
+                    class="form-control text-center opt-text"
+                    type="tel"
+                    placeholder=""
+                    inputmode="numeric"
+                    maxlength="1"
+                    [(ngModel)]="confirmCode[1]"
+                    onkeypress="return /[0-9]/i.test(event.key)"
+                    (input)="moveToNext(confirmCode2, confirmCode3); validate()"
+                    #confirmCode2
+                    (keydown)="handleBackspace($event, 1, confirmCode2, confirmCode1)"
+                  />
+                </div>
+                -
+                <div class="col">
+                  <input
+                    class="form-control text-center opt-text"
+                    type="tel"
+                    placeholder=""
+                    inputmode="numeric"
+                    maxlength="1"
+                    [(ngModel)]="confirmCode[2]"
+                    onkeypress="return /[0-9]/i.test(event.key)"
+                    (input)="moveToNext(confirmCode3, confirmCode4); validate()"
+                    #confirmCode3
+                    (keydown)="handleBackspace($event, 2, confirmCode3, confirmCode2)"
+                  />
+                </div>
+                -
+                <div class="col">
+                  <input
+                    class="form-control text-center opt-text"
+                    type="tel"
+                    placeholder=""
+                    inputmode="numeric"
+                    maxlength="1"
+                    [(ngModel)]="confirmCode[3]"
+                    onkeypress="return /[0-9]/i.test(event.key)"
+                    (input)="moveToNext(confirmCode4, confirmCode5); validate()"
+                    #confirmCode4
+                    (keydown)="handleBackspace($event, 3, confirmCode4, confirmCode3)"
+                  />
+                </div>
+                -
+                <div class="col">
+                  <input
+                    class="form-control text-center opt-text"
+                    type="tel"
+                    appAutoFocus
+                    placeholder=""
+                    inputmode="numeric"
+                    maxlength="1"
+                    [(ngModel)]="confirmCode[4]"
+                    onkeypress="return /[0-9]/i.test(event.key)"
+                    #confirmCode5
+                    (input)="moveToNext(confirmCode5, null); validate()"
+                    (keydown)="handleBackspace($event, 4, confirmCode5, confirmCode4)"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+                @if (showTimer) {
+                    <div  class="row justify-content-center align-items-center">
+                        <div>
+                          <span class="blue">  {{displayCountdown}}  </span>
+                          <span style="font-size: small;"
+                            >زمان باقیمانده تا ارسال مجدد کد فعال سازی</span
+                          >
+                        </div>
+                      </div>
+                }@else {
+                    <div  class="row justify-content-center align-items-center">
+                        <span
+                          style="
+                            text-decoration: underline;
+                            cursor: pointer !important;
+                            text-underline-offset: 4px;
+                                      "
+                                      class="blue"
+                          (click)="resendCode()"
+                        >
+                          ارسال مجدد کد فعال سازی
+                        </span>
+                      </div>
+                }
+             
+            
+              </div>
+              <div class="form-group "
+              (click)="showLogin()"
+              >
+                <div class="btn btn-primary btn-block" >
+                       
+                            <label >بازگشت</label>
+                         
+                          
+                </div>
+              </div>
+              <!-- <span
+              id="terms-error"
+              class="error invalid-feedback"
+              style="display: inline"
+              [innerHTML]="errorMessage"
+            ></span> -->
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

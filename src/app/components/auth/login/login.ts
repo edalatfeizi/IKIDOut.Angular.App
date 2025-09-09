@@ -30,9 +30,11 @@ export class Login {
   ) {}
   validate(userName: string, password: string) {
     if (userName === '') {
-      this.errorMessage = Err_Enter_User_Name;
+      // this.errorMessage = Err_Enter_User_Name;
+      this.showMessage(Err_Enter_User_Name,ToastTypes.DANGER);
     } else if (password === '') {
-      this.errorMessage = Err_Enter_Password;
+      // this.errorMessage = Err_Enter_Password;
+      this.showMessage(Err_Enter_Password,ToastTypes.DANGER)
     } else {
       this.errorMessage = '';
       this.isLoginEnabled = false;
@@ -44,7 +46,11 @@ export class Login {
       this.login(loginData);
     }
   }
-
+  showMessage(message: string, toastType: ToastTypes) {
+    this.store.dispatch(
+      showToast({ toastModel: { toastType: toastType, message: message } })
+    );
+  }
   login(login: LoginDto) {
     this.authService.login(login).subscribe({
       next: (data) => {
@@ -90,9 +96,11 @@ export class Login {
       error: (err) => {
         this.isLoading = false;
         this.isLoginEnabled = true;
-        this.store.dispatch(
-          showToast({ toastModel: { toastType: ToastTypes.WARNING, message: 'Login failed' } })
-        );
+        this.router.navigate(['./error/connection']);
+
+        // this.store.dispatch(
+        //   showToast({ toastModel: { toastType: ToastTypes.WARNING, message: 'Login failed' } })
+        // );
 
         //this.isLoginFailed = false;
       },
