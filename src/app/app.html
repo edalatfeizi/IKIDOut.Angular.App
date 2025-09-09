@@ -1,4 +1,34 @@
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
+  <div class="container-fluid">
+    <div class="todo">
+      <div
+        class="notification-popup"
+        [class.hide]="!(isVisible$ | async)"
+        [class.toast-success]="(toastType$ | async) === toastTypes.SUCCESS"
+        [class.toast-warning]="(toastType$ | async) === toastTypes.WARNING"
+        [class.toast-error]="(toastType$ | async) === toastTypes.DANGER"
+        [class.toast-info]="(toastType$ | async) === toastTypes.DEFAULT"
+      >
+        <i class="fa" 
+        [class.fa-times]="(toastType$ | async) === toastTypes.DANGER" 
+        [class.fa-info]="(toastType$ | async) === toastTypes.DEFAULT" 
+        [class.fa-warning]="(toastType$ | async) === toastTypes.WARNING" 
+        [class.fa-check]="(toastType$ | async) === toastTypes.SUCCESS" 
+        ></i>
+        <span class="toast-message" [innerHTML]="toastMessage$ | async"></span>
+            <!-- <button (click)="triggerErrorToast()">Show error toast</button> -->
+
+      </div>
+    </div>
+  </div>
+  <!-- <div class="container-fluid">
+    <div class="todo">
+        
+      <div class="notification-popup" [class.hide]="!isLoading">
+        <span>fsdfsdfsdf</span>
+      </div>
+    </div>
+  </div> -->
   <!-- Page Header Start-->
   @if(isUserAuthorized){
   <app-header></app-header>

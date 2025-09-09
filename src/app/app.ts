@@ -1,21 +1,79 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Sidebar } from './components/sidebar/sidebar';
 import { Header } from './components/header/header';
 import { Footer } from './components/footer/footer';
 import { Home } from './components/home/home';
 import { StorageService } from './services/storage.service';
-
+import { ToastService } from './services/toast.service';
+import { Store } from '@ngrx/store';
+import {
+  selectIsToastVisible,
+  selectToastMessage,
+  selectToastType,
+} from './states/selectors/toast.selectors';
+import { interval, Observable, Subject, Subscription, take, takeUntil } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+import { ToastModel } from './models/toast_model';
+import { ToastState } from './states/reducers/toast.reducer';
+import { ToastTypes } from './enums/toast_types';
+import { clearToastMessage, showToast } from './states/actions/toast.actions';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, Sidebar, Footer],
+  imports: [RouterOutlet, Header, Sidebar, Footer, AsyncPipe],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App implements OnInit {
+export class App implements OnInit, OnDestroy {
   protected readonly title = signal('IKIDOut.Angular.App');
   storageService = inject(StorageService);
   isUserAuthorized = this.storageService.isConfirmed() && this.storageService.isPassChanged();
+  unsubscribeAuthState$ = new Subject<void>();
+  toastModel: ToastState | null = null;
+  private store = inject(Store);
+  private destroy$ = new Subject<void>();
+  countdownSubscription: Subscription | null = null; // Track countdown subscription
 
-  ngOnInit(): void {}
+ // expose enums for template comparisons
+ toastTypes = ToastTypes;
+
+ // single source of truth via async pipes
+ toastMessage$: Observable<string | null> = this.store.select(selectToastMessage);
+ toastType$: Observable<ToastTypes> = this.store.select(selectToastType);
+ isVisible$: Observable<boolean> = this.store.select(selectIsToastVisible);
+  
+  constructor() {
+    // this.store
+    //   .select(selectShowToast)
+    //   .pipe(takeUntil(this.unsubscribeAuthState$))
+    //   .subscribe((toast) => {
+    //     if (toast) {
+    //       this.toastModel = toast;
+    //     }
+    //   });
+  
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  ngOnInit(): void {
+    // this.loginMessage$.pipe(takeUntil(this.destroy$)).subscribe((message) => {
+    //   if (message) this.toastMessage = message;
+    // });
+  }
+
+   // optional manual dismiss (clicking the ×)
+   dismissToast() {
+    this.store.dispatch(clearToastMessage());
+  }
+
+  // example trigger
+  triggerErrorToast() {
+    this.store.dispatch(
+      showToast({ toastModel: { toastType: ToastTypes.DANGER, message: 'Login failed' } })
+    );
+  }
 }

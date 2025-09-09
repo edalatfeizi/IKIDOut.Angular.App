@@ -5,3 +5,35 @@
 .ltr-dir {
     direction: ltr;
 }
+
+.rtl-dir {
+    direction: rtl;
+}
+
+.pointer-events-none {
+    pointer-events: none;
+    opacity: 0.6; /* look disabled */
+  }
+  .todo .notification-popup {
+    top: 10px !important;
+    
+  }
+  .toast-success{
+    background-color: #7dc006 !important;
+    border-color: #7dc006 !important;
+  }
+  .toast-error{
+    background-color: #e52727 !important;
+    border-color: #e52727 !important;
+  }
+  .toast-info{
+    background-color: #1d97ff !important;
+    border-color: #1d97ff !important;
+  }
+  .toast-warning{
+    background-color: #ff8819 !important;
+    border-color: #ff8819 !important;
+  }
+  .toast-message {
+    margin: 5px;
+  }

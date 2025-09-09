@@ -1,4 +1,5 @@
 <section>
+
   <div class="container-fluid">
     <div class="row">
       <div
@@ -17,6 +18,7 @@
           style="display: none"
         />
       </div>
+      
       <div class="col-xl-5 p-0">
         <div class="login-card">
           <form class="theme-form login-form">
@@ -42,7 +44,7 @@
               <div class="input-group">
                 <span class="input-group-text"><i class="icon-lock"></i></span>
                 <input
-                  class="form-control ltr-dir"
+                  class="form-control ltr-dir" 
                   [type]="showPassword ? 'text' : 'password'"
                   name="login[password]"
                   required=""
@@ -50,19 +52,20 @@
                   #password
                 />
                 
-                <!-- <div class="show-hide"><span class="show"> </span></div> -->
+                <span (click)="showPassword = !showPassword" class="input-group-text hand-cursor"><i class="icon-eye"></i></span>
+
               </div>
             </div>
             <div class="form-group">
               <div class="checkbox"></div>
               <a class="link" href="forget-password.html">فراموشی رمز عبور؟</a>
             </div>
-            <div class="form-group "  
+            <div class="form-group " 
             [class.disabled]="!isLoginEnabled"
             [class.pointer-events-none]="!isLoginEnabled"
             (click)="validate(username.value, password.value)"
             >
-              <div class="btn btn-primary btn-block">
+              <div class="btn btn-primary btn-block" >
                         @if(!isLoading) {
                           <label >ادامه</label>
                         } @else{
@@ -73,6 +76,12 @@
                         
               </div>
             </div>
+            <span
+            id="terms-error"
+            class="error invalid-feedback"
+            style="display: inline"
+            [innerHTML]="errorMessage"
+          ></span>
           </form>
         </div>
       </div>

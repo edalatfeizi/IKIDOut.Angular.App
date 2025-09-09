@@ -42,7 +42,3 @@
     padding: 0px;
 } */
 
-.pointer-events-none {
-    pointer-events: none;
-    opacity: 0.6; /* look disabled */
-  }
