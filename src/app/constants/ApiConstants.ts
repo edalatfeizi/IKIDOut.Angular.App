@@ -47,3 +47,9 @@ export const API_GET_PRODUCT_SEND_OUT_FLOWS =
   BaseUrl + API_V1 + 'ProductSendOutFlow/all'
 
 /** Product Send Out Flows API EndPoints End */
+
+
+/** APP Processes API EndPoints Start*/
+export const API_GET_APP_PROCESSES = BaseUrl + API_V1 + 'app/processes'
+/** APP Processes API EndPoints End*/
+

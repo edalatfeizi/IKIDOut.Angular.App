@@ -1,0 +1,36 @@
+.sidebar-submenu {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition:
+      max-height 0.3s ease,
+      opacity 0.25s ease,
+      padding 0.25s ease;
+  }
+  
+  /* when parent is open */
+  .sidebar-list.open > .sidebar-submenu {
+    max-height: 500px; /* something larger than your tallest submenu */
+    opacity: 1;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  /* caret rotation */
+  /* .according-menu i {
+    transition: transform 0.25s ease;
+  } */
+  /* .sidebar-list.open .according-menu i {
+    transform: rotate(90deg);
+  } */
+  
+  .icon {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+
+  .sibebar-link-title {
+    margin-right: 10px;
+  }

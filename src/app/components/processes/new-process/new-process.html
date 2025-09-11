@@ -1,0 +1,162 @@
+<div class="home">
+  <div class="container-fluid">
+    <div class="page-title">
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <h3>افزودن فرآیند جدید</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <!-- <div class="card-header pb-0">
+                <h5>ثبت فرآیند جدید</h5>
+              </div> -->
+          <div class="card-body">
+            <div class="form theme-form projectcreate">
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label>عنوان فرآیند</label>
+                    <input class="form-control" type="text" placeholder="" />
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label>توضیحات</label>
+                    <input class="form-control" type="text" placeholder="" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <div class="text-end"><a class="btn btn-primary m-r-15" href="#">افزودن</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row project-cards">
+      <div class="col-md-12 project-list">
+        <div class="card">
+          <div class="row">
+            <div class="col-md-6 p-0">
+              <ul id="top-tab" role="tablist" class="nav nav-tabs border-tab">
+          
+                <li class="nav-item">
+                  <span
+                    id="contact-top-tab"
+                    data-bs-toggle="tab"
+                    href="#top-contact"
+                    role="tab"
+                    aria-controls="top-contact"
+                    aria-selected="false"
+                    class="nav-link"
+                    >افزودن مرحله جدید</span
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-6 p-0">
+              <div class="form-group mb-0 me-0"></div>
+              <div class="modal fade" id="exampleModalmdo" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">مرحله جدید</h5>
+                      <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close" data-bs-original-title="" title=""></button>
+                    </div>
+                    <div class="modal-body">
+                      <form>
+                        <div class="mb-3">
+                          <label class="col-form-label" for="recipient-name">عنوان : </label>
+                          <input class="form-control" id="recipient-name" type="text" value="" data-bs-original-title="" title="">
+                        </div>
+                        <div class="mb-3">
+                          <label class="col-form-label" for="message-text">توضیحات : </label>
+                          <textarea class="form-control"></textarea>
+                        </div>
+                    
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button  class="btn btn-secondary"  type="button" data-bs-dismiss="modal" data-bs-original-title="" title="">بستن</button>
+                      <div class="btn btn-primary btn-block" 
+                      [class.disabled]="isLoading"
+                      [class.pointer-events-none]="isLoading" >
+                        @if(!isLoading) {
+                          <span >ثبت اطلاعات</span>
+                        } @else{
+                          <div class="loader-box">
+                            <div class="loader-7"></div>
+                          </div>
+                        }
+                        
+              </div>
+                      <!-- <button class="btn btn-primary" type="button" data-bs-original-title="" title="">ثبت اطلاعات</button> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <a href="projectcreate.html" class="btn btn-primary"
+              data-bs-toggle="modal" data-bs-target="#exampleModalmdo" data-whatever="@fat" data-bs-original-title="" title=""
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="feather feather-plus-square"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                  <line x1="8" y1="12" x2="16" y2="12"></line></svg
+                >ثبت مرحله جدید</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="page-title">
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <h3>مراحل انجام فرآیند</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-body">
+            <!-- cd-timeline Start-->
+            <section class="cd-container" id="cd-timeline">
+              <div class="cd-timeline-block">
+                <div class="cd-timeline-content"></div>
+              </div>
+            </section>
+            <!-- cd-timeline Ends-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
