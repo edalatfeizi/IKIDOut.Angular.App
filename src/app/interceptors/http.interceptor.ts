@@ -19,7 +19,7 @@ import {
     MSG_CALL_SYSTEM,
   } from '../constants/Messages';
   
-  import { ValidationErrorResDto } from '../models/api/response/validation_error_res_dto';
+  import { ValidationErrorResDto } from '../models/api/response/validation-error-res-dto';
 import { AuthService } from '../services/account.service';
 import { ToastService } from '../services/toast.service';
 

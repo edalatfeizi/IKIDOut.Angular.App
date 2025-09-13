@@ -90,3 +90,11 @@ export const ERR_SCREENSHOT_DISABLED =
   export const MSG_CODE_SENT_TO_MOBILE = "کد فعال سازی ارسال شده به شماره"
   export const MSG_ENTER = "وارد نمایید"
   export const MSG_RA = "را"
+
+  export const MSG_ADD_NEW_PROCESS_SUCCESS = "فرآیند جدید با موفقیت ثبت شد."
+  export const ERR_ENTER_NEW_PROCESS_NAME = "لطفا عنوان فرآیند را وارد نمایید."
+  export const ERR_ENTER_NEW_PROCESS_DESC = "لطفا توضیحات فرآیند را وارد نمایید."
+  export const MSG_ADD_NEW_PROCESS_STEP_SUCCESS = "زیر فرآیند جدید با موفقیت ثبت شد."
+  export const ERR_ENTER_NEW_PROCESS_STEP_NAME = "لطفا عنوان زیر فرآیند جدید را وارد نمایید."
+  export const ERR_ENTER_NEW_PROCESS_STEP_DESC = "لطفا توضیحات زیر فرآیند جدید را وارد نمایید."
+  export const MSG_UPDATE_PROCESS_SUCCESS = "بروز رسانی فرآیند با موفقیت ثبت شد."

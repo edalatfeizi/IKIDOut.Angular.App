@@ -107,8 +107,56 @@
             </div>
             <div class="col-md-6 p-0">
               <div class="form-group mb-0 me-0"></div>
-              <a class="btn btn-primary" routerLink="/processes/new">
-                <svg
+              <div class="modal fade" id="exampleModalmdo" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">افزودن فرآیند جدید</h5>
+                      <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close" data-bs-original-title="" title=""></button>
+                    </div>
+                    <div class="modal-body">
+                      <form>
+                        <div class="mb-3">
+                          <label class="col-form-label" for="recipient-name">عنوان : </label>
+                          <input #newProcessTitle class="form-control" id="recipient-name" type="text" value="" data-bs-original-title="" title="">
+                        </div>
+                        <div class="mb-3">
+                          <label class="col-form-label" for="message-text">توضیحات : </label>
+                          <textarea #newProcessDesc class="form-control"></textarea>
+                        </div>
+                        <span
+                        id="terms-error"
+                        class="invalid-feedback"
+                        style="display: block"
+                        [innerHTML]="errorMessage"
+                      ></span>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button #btnCloseModal class="btn btn-secondary"  type="button" data-bs-dismiss="modal" data-bs-original-title="" title="">بستن</button>
+                      <div class="btn btn-primary btn-block" 
+                      [class.disabled]="isLoading"
+                      [class.pointer-events-none]="isLoading"
+                      (click)="validateNewProcess(newProcessTitle.value, newProcessDesc.value)" >
+                        @if(!isLoading) {
+                          <span >ذخیره اطلاعات</span>
+                        } @else{
+                          <div class="loader-box">
+                            <div class="loader-7"></div>
+                          </div>
+                        }
+                        
+                      </div>
+                    
+                      <!-- <button class="btn btn-primary" type="button" data-bs-original-title="" title="">ثبت اطلاعات</button> -->
+                    </div>
+                 
+                  </div>
+                </div>
+              </div>
+              <a href="projectcreate.html" class="btn btn-primary"
+              data-bs-toggle="modal" data-bs-target="#exampleModalmdo" data-whatever="@fat" data-bs-original-title="" title=""
+                ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -148,83 +196,42 @@
                       trackBy: trackByProcessId
                     "
                   >
-                    <div class="col-xxl-4 box-col-6 col-lg-6">
-                      <div class="project-box">
-                        <span class="badge badge-secondary">انجام شده</span>
-                        <h6>{{process.name}}</h6>
-                        <div class="media">
-                          <img
-                            class="img-20 me-2 rounded-circle"
-                            src="../assets/images/user/3.jpg"
-                            alt=""
-                            data-original-title=""
-                            title=""
-                          />
-                          <div class="media-body">
-                            <p>راست چین، ایران</p>
+                  <div class="col-xl-6 xl-100 box-col-12">
+                    <div class="card process" (click)="showProcess(process)">
+                      <div class="job-search">
+                        <div class="card-body">
+                          <div class="media">
+                            <img class="process-icon" src="../../../../assets/images/svg/process.svg" alt="process icon" width="24" height="24" />
+                            <div class="media-body">
+                              <h6 class="f-w-600"><a href="job-details.html">{{process.name}}</a>
+                                <!-- <span class="badge badge-primary pull-right">جدید</span> -->
+                                <span class="badge pull-right digits"
+                                [class.badge-success]="process.active"
+                                [class.badge-danger]="!process.active">
+                                @if(process.active){
+                                  فعال
+                                }@else{
+                                  غیر فعال
+                                }
+                              </span>
+                              </h6>
+                              <p>تعداد زیر فرآیند: {{process.steps.length}}</p>
+
+                              <!-- <ul class="rating">
+                                <li><i class="fa fa-star font-warning"></i></li>
+                                <li><i class="fa fa-star font-warning"></i></li>
+                                <li><i class="fa fa-star font-warning"></i></li>
+                                <li><i class="fa fa-star font-warning"></i></li>
+                                <li><i class="fa fa-star font-warning"></i></li>
+                              </ul> -->
+                            </div>
                           </div>
-                        </div>
-                        <p>لورم ایپسوم به سادگی متن ساختگی صنعت چاپ و حروفچینی است.</p>
-                        <div class="row details">
-                          <div class="col-6"><span>مسائل </span></div>
-                          <div class="col-6 font-secondary">24</div>
-                          <div class="col-6"><span>حل شده</span></div>
-                          <div class="col-6 font-secondary">24</div>
-                          <div class="col-6"><span>نظر</span></div>
-                          <div class="col-6 font-secondary">40</div>
-                        </div>
-                        <div class="customers">
-                          <ul>
-                            <li class="d-inline-block">
-                              <img
-                                class="img-30 rounded-circle"
-                                src="../assets/images/user/3.jpg"
-                                alt=""
-                                data-original-title=""
-                                title=""
-                              />
-                            </li>
-                            <li class="d-inline-block">
-                              <img
-                                class="img-30 rounded-circle"
-                                src="../assets/images/user/5.jpg"
-                                alt=""
-                                data-original-title=""
-                                title=""
-                              />
-                            </li>
-                            <li class="d-inline-block">
-                              <img
-                                class="img-30 rounded-circle"
-                                src="../assets/images/user/1.jpg"
-                                alt=""
-                                data-original-title=""
-                                title=""
-                              />
-                            </li>
-                            <li class="d-inline-block ms-2">
-                              <p class="f-12">+3 بیشتر</p>
-                            </li>
-                          </ul>
-                        </div>
-                        <div class="project-status mt-4">
-                          <div class="media mb-0">
-                            <p>100%</p>
-                            <div class="media-body text-end"><span>انجام شده</span></div>
-                          </div>
-                          <div class="progress" style="height: 5px">
-                            <div
-                              class="progress-bar-animated bg-secondary"
-                              role="progressbar"
-                              style="width: 100%"
-                              aria-valuenow="10"
-                              aria-valuemin="0"
-                              aria-valuemax="100"
-                            ></div>
-                          </div>
+                          <p>{{process.description}}</p>
                         </div>
                       </div>
                     </div>
+                  </div>
+           
                   </ng-container>
 
                   }
@@ -236,470 +243,56 @@
                 role="tabpanel"
                 aria-labelledby="profile-top-tab"
               >
-                <div class="row">
-                  <div class="col-xxl-4 box-col-6 col-lg-6">
-                    <div class="project-box">
-                      <span class="badge badge-primary">در حال انجام</span>
-                      <h6>طراحی پنل ادمین</h6>
-                      <div class="media">
-                        <img
-                          class="img-20 me-2 rounded-circle"
-                          src="../assets/images/user/3.jpg"
-                          alt=""
-                          data-original-title=""
-                          title=""
-                        />
-                        <div class="media-body">
-                          <p>راست چین، ایران</p>
-                        </div>
-                      </div>
-                      <p>لورم ایپسوم به سادگی متن ساختگی صنعت چاپ و حروفچینی است.</p>
-                      <div class="row details">
-                        <div class="col-6"><span>مسائل </span></div>
-                        <div class="col-6 font-primary">12</div>
-                        <div class="col-6"><span>حل شده</span></div>
-                        <div class="col-6 font-primary">5</div>
-                        <div class="col-6"><span>نظر</span></div>
-                        <div class="col-6 font-primary">7</div>
-                      </div>
-                      <div class="customers">
-                        <ul>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/3.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/5.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/1.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block ms-2">
-                            <p class="f-12">+10 بیشتر</p>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="project-status mt-4">
-                        <div class="media mb-0">
-                          <p>70%</p>
-                          <div class="media-body text-end"><span>انجام شده</span></div>
-                        </div>
-                        <div class="progress" style="height: 5px">
-                          <div
-                            class="progress-bar-animated bg-primary progress-bar-striped"
-                            role="progressbar"
-                            style="width: 70%"
-                            aria-valuenow="10"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          ></div>
+              <div class="row">
+                @if ((processes$ | async)!.length > 0) {
+                <ng-container
+                  *ngFor="
+                    let process of processes$ | async;
+                    let i = index;
+                    trackBy: trackByProcessId
+                  "
+                >
+                @if(!process.active){
+                  <div class="col-xl-6 xl-100 box-col-12">
+                    <div class="card">
+                      <div class="job-search">
+                        <div class="card-body">
+                          <div class="media">
+                            <img class="process-icon" src="../../../../assets/images/svg/process.svg" alt="process icon" width="24" height="24" />
+                            <div class="media-body">
+                              <h6 class="f-w-600"><a href="job-details.html">{{process.name}}</a>
+                                <!-- <span class="badge badge-primary pull-right">جدید</span> -->
+                                <span class="badge pull-right digits"
+                                [class.badge-success]="process.active"
+                                [class.badge-danger]="!process.active">
+                                @if(process.active){
+                                  فعال
+                                }@else{
+                                  غیر فعال
+                                }
+                              </span>
+                              </h6>
+                              <p>تعداد زیر فرآیند: {{process.steps.length}}</p>
+                              <!-- <ul class="rating">
+                                <li><i class="fa fa-star font-warning"></i></li>
+                                <li><i class="fa fa-star font-warning"></i></li>
+                                <li><i class="fa fa-star font-warning"></i></li>
+                                <li><i class="fa fa-star font-warning"></i></li>
+                                <li><i class="fa fa-star font-warning"></i></li>
+                              </ul> -->
+                            </div>
+                          </div>
+                          <p>{{process.description}}</p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-xxl-4 box-col-6 col-lg-6">
-                    <div class="project-box">
-                      <span class="badge badge-primary">در حال انجام</span>
-                      <h6>طراحی ادمین جهانی</h6>
-                      <div class="media">
-                        <img
-                          class="img-20 me-2 rounded-circle"
-                          src="../assets/images/user/3.jpg"
-                          alt=""
-                          data-original-title=""
-                          title=""
-                        />
-                        <div class="media-body">
-                          <p>راست چین، ایران</p>
-                        </div>
-                      </div>
-                      <p>لورم ایپسوم به سادگی متن ساختگی صنعت چاپ و حروفچینی است.</p>
-                      <div class="row details">
-                        <div class="col-6"><span>مسائل </span></div>
-                        <div class="col-6 font-primary">24</div>
-                        <div class="col-6"><span>حل شده</span></div>
-                        <div class="col-6 font-primary">24</div>
-                        <div class="col-6"><span>نظر</span></div>
-                        <div class="col-6 font-primary">40</div>
-                      </div>
-                      <div class="customers">
-                        <ul>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/3.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/5.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/1.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block ms-2">
-                            <p class="f-12">+3 بیشتر</p>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="project-status mt-4">
-                        <div class="media mb-0">
-                          <p>100%</p>
-                          <div class="media-body text-end"><span>انجام شده</span></div>
-                        </div>
-                        <div class="progress" style="height: 5px">
-                          <div
-                            class="progress-bar-animated bg-primary"
-                            role="progressbar"
-                            style="width: 100%"
-                            aria-valuenow="10"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xxl-4 box-col-6 col-lg-6">
-                    <div class="project-box">
-                      <span class="badge badge-primary">در حال انجام</span>
-                      <h6>طراحی قالب ادمین جدید</h6>
-                      <div class="media">
-                        <img
-                          class="img-20 me-2 rounded-circle"
-                          src="../assets/images/user/3.jpg"
-                          alt=""
-                          data-original-title=""
-                          title=""
-                        />
-                        <div class="media-body">
-                          <p>راست چین، ایران</p>
-                        </div>
-                      </div>
-                      <p>لورم ایپسوم به سادگی متن ساختگی صنعت چاپ و حروفچینی است.</p>
-                      <div class="row details">
-                        <div class="col-6"><span>مسائل </span></div>
-                        <div class="col-6 font-primary">40</div>
-                        <div class="col-6"><span>حل شده</span></div>
-                        <div class="col-6 font-primary">40</div>
-                        <div class="col-6"><span>نظر</span></div>
-                        <div class="col-6 font-primary">20</div>
-                      </div>
-                      <div class="customers">
-                        <ul>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/3.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/5.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/1.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block ms-2">
-                            <p class="f-12">+2 بیشتر</p>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="project-status mt-4">
-                        <div class="media mb-0">
-                          <p>100%</p>
-                          <div class="media-body text-end"><span>انجام شده</span></div>
-                        </div>
-                        <div class="progress" style="height: 5px">
-                          <div
-                            class="progress-bar-animated bg-primary"
-                            role="progressbar"
-                            style="width: 100%"
-                            aria-valuenow="10"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xxl-4 box-col-6 col-lg-6">
-                    <div class="project-box">
-                      <span class="badge badge-primary">در حال انجام</span>
-                      <h6>طراحی ادمین جهانی</h6>
-                      <div class="media">
-                        <img
-                          class="img-20 me-2 rounded-circle"
-                          src="../assets/images/user/3.jpg"
-                          alt=""
-                          data-original-title=""
-                          title=""
-                        />
-                        <div class="media-body">
-                          <p>راست چین، ایران</p>
-                        </div>
-                      </div>
-                      <p>لورم ایپسوم به سادگی متن ساختگی صنعت چاپ و حروفچینی است.</p>
-                      <div class="row details">
-                        <div class="col-6"><span>مسائل </span></div>
-                        <div class="col-6 font-primary">24</div>
-                        <div class="col-6"><span>حل شده</span></div>
-                        <div class="col-6 font-primary">24</div>
-                        <div class="col-6"><span>نظر</span></div>
-                        <div class="col-6 font-primary">40</div>
-                      </div>
-                      <div class="customers">
-                        <ul>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/3.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/5.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/1.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block ms-2">
-                            <p class="f-12">+3 بیشتر</p>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="project-status mt-4">
-                        <div class="media mb-0">
-                          <p>100%</p>
-                          <div class="media-body text-end"><span>انجام شده</span></div>
-                        </div>
-                        <div class="progress" style="height: 5px">
-                          <div
-                            class="progress-bar-animated bg-primary"
-                            role="progressbar"
-                            style="width: 100%"
-                            aria-valuenow="10"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xxl-4 box-col-6 col-lg-6">
-                    <div class="project-box">
-                      <span class="badge badge-primary">در حال انجام</span>
-                      <h6>طراحی پنل ادمین</h6>
-                      <div class="media">
-                        <img
-                          class="img-20 me-2 rounded-circle"
-                          src="../assets/images/user/3.jpg"
-                          alt=""
-                          data-original-title=""
-                          title=""
-                        />
-                        <div class="media-body">
-                          <p>راست چین، ایران</p>
-                        </div>
-                      </div>
-                      <p>لورم ایپسوم به سادگی متن ساختگی صنعت چاپ و حروفچینی است.</p>
-                      <div class="row details">
-                        <div class="col-6"><span>مسائل </span></div>
-                        <div class="col-6 font-primary">12</div>
-                        <div class="col-6"><span>حل شده</span></div>
-                        <div class="col-6 font-primary">5</div>
-                        <div class="col-6"><span>نظر</span></div>
-                        <div class="col-6 font-primary">7</div>
-                      </div>
-                      <div class="customers">
-                        <ul>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/3.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/5.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/1.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block ms-2">
-                            <p class="f-12">+10 بیشتر</p>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="project-status mt-4">
-                        <div class="media mb-0">
-                          <p>70%</p>
-                          <div class="media-body text-end"><span>انجام شده</span></div>
-                        </div>
-                        <div class="progress" style="height: 5px">
-                          <div
-                            class="progress-bar-animated bg-primary progress-bar-striped"
-                            role="progressbar"
-                            style="width: 70%"
-                            aria-valuenow="10"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xxl-4 box-col-6 col-lg-6">
-                    <div class="project-box">
-                      <span class="badge badge-primary">در حال انجام</span>
-                      <h6>طراحی قالب ادمین جدید</h6>
-                      <div class="media">
-                        <img
-                          class="img-20 me-2 rounded-circle"
-                          src="../assets/images/user/3.jpg"
-                          alt=""
-                          data-original-title=""
-                          title=""
-                        />
-                        <div class="media-body">
-                          <p>راست چین، ایران</p>
-                        </div>
-                      </div>
-                      <p>لورم ایپسوم به سادگی متن ساختگی صنعت چاپ و حروفچینی است.</p>
-                      <div class="row details">
-                        <div class="col-6"><span>مسائل </span></div>
-                        <div class="col-6 font-primary">40</div>
-                        <div class="col-6"><span>حل شده</span></div>
-                        <div class="col-6 font-primary">40</div>
-                        <div class="col-6"><span>نظر</span></div>
-                        <div class="col-6 font-primary">20</div>
-                      </div>
-                      <div class="customers">
-                        <ul>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/3.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/5.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/1.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block ms-2">
-                            <p class="f-12">+2 بیشتر</p>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="project-status mt-4">
-                        <div class="media mb-0">
-                          <p>100%</p>
-                          <div class="media-body text-end"><span>انجام شده</span></div>
-                        </div>
-                        <div class="progress" style="height: 5px">
-                          <div
-                            class="progress-bar-animated bg-primary"
-                            role="progressbar"
-                            style="width: 100%"
-                            aria-valuenow="10"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                }
+                  
+                </ng-container>
+
+                }
+              </div>
               </div>
               <div
                 class="tab-pane fade"
@@ -707,470 +300,57 @@
                 role="tabpanel"
                 aria-labelledby="contact-top-tab"
               >
-                <div class="row">
-                  <div class="col-xxl-4 box-col-6 col-lg-6">
-                    <div class="project-box">
-                      <span class="badge badge-secondary">انجام شده</span>
-                      <h6>طراحی پنل ادمین</h6>
-                      <div class="media">
-                        <img
-                          class="img-20 me-2 rounded-circle"
-                          src="../assets/images/user/3.jpg"
-                          alt=""
-                          data-original-title=""
-                          title=""
-                        />
-                        <div class="media-body">
-                          <p>راست چین، ایران</p>
-                        </div>
-                      </div>
-                      <p>لورم ایپسوم به سادگی متن ساختگی صنعت چاپ و حروفچینی است.</p>
-                      <div class="row details">
-                        <div class="col-6"><span>مسائل </span></div>
-                        <div class="col-6 font-secondary">12</div>
-                        <div class="col-6"><span>حل شده</span></div>
-                        <div class="col-6 font-secondary">5</div>
-                        <div class="col-6"><span>نظر</span></div>
-                        <div class="col-6 font-secondary">7</div>
-                      </div>
-                      <div class="customers">
-                        <ul>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/3.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/5.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/1.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block ms-2">
-                            <p class="f-12">+10 بیشتر</p>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="project-status mt-4">
-                        <div class="media mb-0">
-                          <p>70%</p>
-                          <div class="media-body text-end"><span>انجام شده</span></div>
-                        </div>
-                        <div class="progress" style="height: 5px">
-                          <div
-                            class="progress-bar-animated bg-secondary progress-bar-striped"
-                            role="progressbar"
-                            style="width: 70%"
-                            aria-valuenow="10"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          ></div>
+              <div class="row">
+                @if ((processes$ | async)!.length > 0) {
+                <ng-container
+                  *ngFor="
+                    let process of processes$ | async;
+                    let i = index;
+                    trackBy: trackByProcessId
+                  "
+                >
+                @if(process.active){
+                  <div class="col-xl-6 xl-100 box-col-12">
+                    <div class="card">
+                      <div class="job-search">
+                        <div class="card-body">
+                          <div class="media">
+                            <img class="process-icon" src="../../../../assets/images/svg/process.svg" alt="process icon" width="24" height="24" />
+                            <div class="media-body">
+                              <h6 class="f-w-600"><a href="job-details.html">{{process.name}}</a>
+                                <!-- <span class="badge badge-primary pull-right">جدید</span> -->
+                                <span class="badge pull-right digits"
+                                [class.badge-success]="process.active"
+                                [class.badge-danger]="!process.active">
+                                @if(process.active){
+                                  فعال
+                                }@else{
+                                  غیر فعال
+                                }
+                              </span>
+                              </h6>
+                              <p>تعداد زیر فرآیند: {{process.steps.length}}</p>
+                              <!-- <ul class="rating">
+                                <li><i class="fa fa-star font-warning"></i></li>
+                                <li><i class="fa fa-star font-warning"></i></li>
+                                <li><i class="fa fa-star font-warning"></i></li>
+                                <li><i class="fa fa-star font-warning"></i></li>
+                                <li><i class="fa fa-star font-warning"></i></li>
+                              </ul> -->
+                            </div>
+                          </div>
+                          <p>{{process.description}}</p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-xxl-4 box-col-6 col-lg-6">
-                    <div class="project-box">
-                      <span class="badge badge-secondary">انجام شده</span>
-                      <h6>طراحی ادمین جهانی</h6>
-                      <div class="media">
-                        <img
-                          class="img-20 me-2 rounded-circle"
-                          src="../assets/images/user/3.jpg"
-                          alt=""
-                          data-original-title=""
-                          title=""
-                        />
-                        <div class="media-body">
-                          <p>راست چین، ایران</p>
-                        </div>
-                      </div>
-                      <p>لورم ایپسوم به سادگی متن ساختگی صنعت چاپ و حروفچینی است.</p>
-                      <div class="row details">
-                        <div class="col-6"><span>مسائل </span></div>
-                        <div class="col-6 font-secondary">24</div>
-                        <div class="col-6"><span>حل شده</span></div>
-                        <div class="col-6 font-secondary">24</div>
-                        <div class="col-6"><span>نظر</span></div>
-                        <div class="col-6 font-secondary">40</div>
-                      </div>
-                      <div class="customers">
-                        <ul>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/3.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/5.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/1.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block ms-2">
-                            <p class="f-12">+3 بیشتر</p>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="project-status mt-4">
-                        <div class="media mb-0">
-                          <p>100%</p>
-                          <div class="media-body text-end"><span>انجام شده</span></div>
-                        </div>
-                        <div class="progress" style="height: 5px">
-                          <div
-                            class="progress-bar-animated bg-secondary"
-                            role="progressbar"
-                            style="width: 100%"
-                            aria-valuenow="10"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xxl-4 box-col-6 col-lg-6">
-                    <div class="project-box">
-                      <span class="badge badge-secondary">انجام شده</span>
-                      <h6>طراحی قالب ادمین جدید</h6>
-                      <div class="media">
-                        <img
-                          class="img-20 me-2 rounded-circle"
-                          src="../assets/images/user/3.jpg"
-                          alt=""
-                          data-original-title=""
-                          title=""
-                        />
-                        <div class="media-body">
-                          <p>راست چین، ایران</p>
-                        </div>
-                      </div>
-                      <p>لورم ایپسوم به سادگی متن ساختگی صنعت چاپ و حروفچینی است.</p>
-                      <div class="row details">
-                        <div class="col-6"><span>مسائل </span></div>
-                        <div class="col-6 font-secondary">40</div>
-                        <div class="col-6"><span>حل شده</span></div>
-                        <div class="col-6 font-secondary">40</div>
-                        <div class="col-6"><span>نظر</span></div>
-                        <div class="col-6 font-secondary">20</div>
-                      </div>
-                      <div class="customers">
-                        <ul>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/3.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/5.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/1.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block ms-2">
-                            <p class="f-12">+2 بیشتر</p>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="project-status mt-4">
-                        <div class="media mb-0">
-                          <p>100%</p>
-                          <div class="media-body text-end"><span>انجام شده</span></div>
-                        </div>
-                        <div class="progress" style="height: 5px">
-                          <div
-                            class="progress-bar-animated bg-secondary"
-                            role="progressbar"
-                            style="width: 100%"
-                            aria-valuenow="10"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xxl-4 box-col-6 col-lg-6">
-                    <div class="project-box">
-                      <span class="badge badge-secondary">انجام شده</span>
-                      <h6>طراحی ادمین جهانی</h6>
-                      <div class="media">
-                        <img
-                          class="img-20 me-2 rounded-circle"
-                          src="../assets/images/user/3.jpg"
-                          alt=""
-                          data-original-title=""
-                          title=""
-                        />
-                        <div class="media-body">
-                          <p>راست چین، ایران</p>
-                        </div>
-                      </div>
-                      <p>لورم ایپسوم به سادگی متن ساختگی صنعت چاپ و حروفچینی است.</p>
-                      <div class="row details">
-                        <div class="col-6"><span>مسائل </span></div>
-                        <div class="col-6 font-secondary">24</div>
-                        <div class="col-6"><span>حل شده</span></div>
-                        <div class="col-6 font-secondary">24</div>
-                        <div class="col-6"><span>نظر</span></div>
-                        <div class="col-6 font-secondary">40</div>
-                      </div>
-                      <div class="customers">
-                        <ul>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/3.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/5.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/1.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block ms-2">
-                            <p class="f-12">+3 بیشتر</p>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="project-status mt-4">
-                        <div class="media mb-0">
-                          <p>100%</p>
-                          <div class="media-body text-end"><span>انجام شده</span></div>
-                        </div>
-                        <div class="progress" style="height: 5px">
-                          <div
-                            class="progress-bar-animated bg-secondary"
-                            role="progressbar"
-                            style="width: 100%"
-                            aria-valuenow="10"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xxl-4 box-col-6 col-lg-6">
-                    <div class="project-box">
-                      <span class="badge badge-primary">انجام شده</span>
-                      <h6>طراحی پنل ادمین</h6>
-                      <div class="media">
-                        <img
-                          class="img-20 me-2 rounded-circle"
-                          src="../assets/images/user/3.jpg"
-                          alt=""
-                          data-original-title=""
-                          title=""
-                        />
-                        <div class="media-body">
-                          <p>راست چین، ایران</p>
-                        </div>
-                      </div>
-                      <p>لورم ایپسوم به سادگی متن ساختگی صنعت چاپ و حروفچینی است.</p>
-                      <div class="row details">
-                        <div class="col-6"><span>مسائل </span></div>
-                        <div class="col-6 font-secondary">12</div>
-                        <div class="col-6"><span>حل شده</span></div>
-                        <div class="col-6 font-secondary">5</div>
-                        <div class="col-6"><span>نظر</span></div>
-                        <div class="col-6 font-secondary">7</div>
-                      </div>
-                      <div class="customers">
-                        <ul>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/3.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/5.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/1.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block ms-2">
-                            <p class="f-12">+10 بیشتر</p>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="project-status mt-4">
-                        <div class="media mb-0">
-                          <p>70%</p>
-                          <div class="media-body text-end"><span>انجام شده</span></div>
-                        </div>
-                        <div class="progress" style="height: 5px">
-                          <div
-                            class="progress-bar-animated bg-secondary progress-bar-striped"
-                            role="progressbar"
-                            style="width: 70%"
-                            aria-valuenow="10"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xxl-4 box-col-6 col-lg-6">
-                    <div class="project-box">
-                      <span class="badge badge-secondary">انجام شده</span>
-                      <h6>طراحی قالب ادمین جدید</h6>
-                      <div class="media">
-                        <img
-                          class="img-20 me-2 rounded-circle"
-                          src="../assets/images/user/3.jpg"
-                          alt=""
-                          data-original-title=""
-                          title=""
-                        />
-                        <div class="media-body">
-                          <p>راست چین، ایران</p>
-                        </div>
-                      </div>
-                      <p>لورم ایپسوم به سادگی متن ساختگی صنعت چاپ و حروفچینی است.</p>
-                      <div class="row details">
-                        <div class="col-6"><span>مسائل </span></div>
-                        <div class="col-6 font-secondary">40</div>
-                        <div class="col-6"><span>حل شده</span></div>
-                        <div class="col-6 font-secondary">40</div>
-                        <div class="col-6"><span>نظر</span></div>
-                        <div class="col-6 font-secondary">20</div>
-                      </div>
-                      <div class="customers">
-                        <ul>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/3.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/5.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block">
-                            <img
-                              class="img-30 rounded-circle"
-                              src="../assets/images/user/1.jpg"
-                              alt=""
-                              data-original-title=""
-                              title=""
-                            />
-                          </li>
-                          <li class="d-inline-block ms-2">
-                            <p class="f-12">+2 بیشتر</p>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="project-status mt-4">
-                        <div class="media mb-0">
-                          <p>100%</p>
-                          <div class="media-body text-end"><span>انجام شده</span></div>
-                        </div>
-                        <div class="progress" style="height: 5px">
-                          <div
-                            class="progress-bar-animated bg-secondary"
-                            role="progressbar"
-                            style="width: 100%"
-                            aria-valuenow="10"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                }
+                
+                 
+                </ng-container>
+
+                }
+              </div>
               </div>
             </div>
           </div>

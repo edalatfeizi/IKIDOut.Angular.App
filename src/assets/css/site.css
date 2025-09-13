@@ -14,6 +14,7 @@
     pointer-events: none;
     opacity: 0.6; /* look disabled */
   }
+
   .todo .notification-popup {
     top: 10px !important;
     

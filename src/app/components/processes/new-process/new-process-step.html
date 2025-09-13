@@ -1,0 +1,187 @@
+<div class="home">
+  <div class="container-fluid">
+    <div class="page-title">
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <h3>اطلاعات فرآیند</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <!-- <div class="card-header pb-0">
+                <h5>ثبت فرآیند جدید</h5>
+              </div> -->
+          <div class="card-body">
+            <div class="form theme-form projectcreate">
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label>عنوان</label>
+                    <input #processName class="form-control" type="text" placeholder="" value="{{process?.name}}" />
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label>توضیحات</label>
+                    <input #processDesc class="form-control" type="text" placeholder="" value="{{process?.description}}" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <div class="btn btn-primary btn-block"
+                  [class.disabled]="isLoading"
+                  [class.pointer-events-none]="isLoading"
+                  (click)="validateProcess(processName.value, processDesc.value)"
+                  >
+                    @if(!isLoading) {
+                      <span >ثبت اطلاعات</span>
+                    } @else{
+                      <div class="loader-box">
+                        <div class="loader-7"></div>
+                      </div>
+                    }
+
+                  </div>
+                  <!-- <div class="text-end"><a (click)="validate(processName.value, processDesc.value)" class="btn btn-primary m-r-15" href="#">افزودن</a></div> -->
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="page-title">
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <h3>افزودن زیر فرآیند جدید برای : {{process?.name}}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <!-- <div class="card-header pb-0">
+                <h5>ثبت فرآیند جدید</h5>
+              </div> -->
+          <div class="card-body">
+            <div class="form theme-form projectcreate">
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label>عنوان</label>
+                    <input #processStepName class="form-control" type="text" placeholder="" />
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label>توضیحات</label>
+                    <input #processStepDesc class="form-control" type="text" placeholder="" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <div class="btn btn-primary btn-block"
+                  [class.disabled]="isLoading"
+                  [class.pointer-events-none]="isLoading"
+                  (click)="validateNewStep(processStepName.value, processStepDesc.value)"
+                  >
+                    @if(!isLoading) {
+                      <span >ثبت اطلاعات</span>
+                    } @else{
+                      <div class="loader-box">
+                        <div class="loader-7"></div>
+                      </div>
+                    }
+
+                  </div>
+                  <!-- <div class="text-end"><a (click)="validate(processName.value, processDesc.value)" class="btn btn-primary m-r-15" href="#">افزودن</a></div> -->
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="page-title">
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <h3>زیر فرآیند های : {{process?.name}}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="timeline">
+          <div
+            class="timeline-item"
+            *ngFor="let processStep of processSteps$ | async; let i = index; trackBy: trackByProcessStepId"
+          >
+            <div class="timeline-card card">
+              <div class="card-header pb-0">
+                <div class="media">
+                  <div class="media-body">
+                    <h5>عنوان : {{process?.name}}</h5>
+                  </div>
+                  <div class="icon-box onhover-dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                    <div class="icon-box-show onhover-show-div">
+                      <ul>
+                        <li>
+                         <a data-bs-original-title="" title="">
+                            ویرایش
+                            </a></li>
+                        <li> <a data-bs-original-title="" title="">
+                            حذف</a></li>
+                     
+                        
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="activity-media">
+                  <div class="media">
+                    <div class="recent-circle bg-primary"></div>
+                    <div class="media-body">
+                      <h6 class="font-roboto">
+                        توضیحات: {{process?.description}}
+                      </h6><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock me-2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span class="font-roboto">25 خرداد 1401 | 20 ساعت
+                          پیش</span></span>
+                    </div>
+                  </div>
+            
+                </div>
+              </div>
+            <div class="timeline-dot"></div>
+          </div>
+        </div>
+        
+        
+   
+      </div>
+    </div>
+  </div>
+</div>

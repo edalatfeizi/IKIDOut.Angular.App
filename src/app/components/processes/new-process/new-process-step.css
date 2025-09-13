@@ -1,0 +1,50 @@
+.timeline {
+  position: relative;
+  padding-right: 50px; /* more breathing room for line & dots */
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 20px; /* place line a bit outside */
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, #007bff, #00c6ff); /* gradient line */
+  border-radius: 4px;
+  opacity: 0.8;
+}
+
+.timeline-card {
+  position: relative;
+  margin-bottom: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeline-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.timeline-card::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -22px; /* align with line */
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  background: radial-gradient(circle at center, #00c6ff, #007bff);
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(0, 123, 255, 0.6);
+  border: 3px solid #fff;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.timeline-card:hover::before {
+  transform: translateY(-50%) scale(1.2);
+  box-shadow: 0 0 18px rgba(0, 123, 255, 0.9);
+}

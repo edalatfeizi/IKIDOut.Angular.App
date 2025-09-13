@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewProcess } from './new-process';
+import { NewProcessStep } from './new-process-step';
 
-describe('NewProcess', () => {
-  let component: NewProcess;
-  let fixture: ComponentFixture<NewProcess>;
+describe('NewProcessStep', () => {
+  let component: NewProcessStep;
+  let fixture: ComponentFixture<NewProcessStep>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NewProcess]
+      imports: [NewProcessStep]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(NewProcess);
+    fixture = TestBed.createComponent(NewProcessStep);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

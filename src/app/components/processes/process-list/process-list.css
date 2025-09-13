@@ -3,3 +3,10 @@
     right: 15px;
     top: 15px;
 }
+
+.process-icon{
+    margin-left: 10px;
+}
+.process {
+    cursor: pointer;
+}
