@@ -100,7 +100,7 @@
                   <div class="btn btn-primary btn-block"
                   [class.disabled]="isLoading"
                   [class.pointer-events-none]="isLoading"
-                  (click)="validateNewStep(processStepName.value, processStepDesc.value)"
+                  (click)="validateNewStep(processStepName.value, processStepDesc.value,true)"
                   >
                     @if(!isLoading) {
                       <span >ثبت اطلاعات</span>
@@ -143,13 +143,15 @@
               <div class="card-header pb-0">
                 <div class="media">
                   <div class="media-body">
-                    <h5>عنوان : {{process?.name}}</h5>
+                    <h5>عنوان : {{processStep?.name}}</h5>
                   </div>
                   <div class="icon-box onhover-dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
                     <div class="icon-box-show onhover-show-div">
                       <ul>
                         <li>
-                         <a data-bs-original-title="" title="">
+                          
+                         <a 
+                         data-bs-toggle="modal" data-bs-target="#exampleModalmdo" data-whatever="@fat" data-bs-original-title="" title="" (click)="setSelectedStep(processStep)">
                             ویرایش
                             </a></li>
                         <li> <a data-bs-original-title="" title="">
@@ -167,7 +169,7 @@
                     <div class="recent-circle bg-primary"></div>
                     <div class="media-body">
                       <h6 class="font-roboto">
-                        توضیحات: {{process?.description}}
+                        توضیحات: {{processStep?.description}}
                       </h6><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock me-2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span class="font-roboto">25 خرداد 1401 | 20 ساعت
                           پیش</span></span>
                     </div>
@@ -184,4 +186,55 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="exampleModalmdo" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">ویرایش زیرفرآیند</h5>
+          <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close" data-bs-original-title="" title=""></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label class="col-form-label" for="recipient-name">عنوان : </label>
+              <input #newProcessTitle class="form-control" id="recipient-name" type="text" value="{{selectedProcessStep?.name}}" 
+              data-bs-original-title="" title="">
+            </div>
+            <div class="mb-3">
+              <label class="col-form-label" for="message-text">توضیحات : </label>
+              <textarea #newProcessDesc class="form-control" value="{{selectedProcessStep?.description}}"></textarea>
+            </div>
+            <span
+            id="terms-error"
+            class="invalid-feedback"
+            style="display: block"
+            [innerHTML]="errorMessage"
+          ></span>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button #btnCloseModal class="btn btn-secondary"  type="button" data-bs-dismiss="modal" data-bs-original-title="" title="">بستن</button>
+          <div class="btn btn-primary btn-block" 
+          [class.disabled]="isLoading"
+          [class.pointer-events-none]="isLoading"
+          (click)="validateNewStep(newProcessTitle.value, newProcessDesc.value,false)" >
+            @if(!isLoading) {
+              <span >ذخیره اطلاعات</span>
+            } @else{
+              <div class="loader-box">
+                <div class="loader-7"></div>
+              </div>
+            }
+            
+          </div>
+        
+          <!-- <button class="btn btn-primary" type="button" data-bs-original-title="" title="">ثبت اطلاعات</button> -->
+        </div>
+     
+      </div>
+    </div>
+  </div>
 </div>
+
+

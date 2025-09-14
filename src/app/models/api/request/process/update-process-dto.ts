@@ -1,5 +1,4 @@
 export type UpdateProcessDto = {
-    Name: string
-    Description?: string 
-  }
-  
+  Name: string;
+  Description?: string;
+};

@@ -1,7 +1,7 @@
 import { BaseDto } from "../../base_dto"
 
 export interface ProcessStepResDto extends BaseDto{
-    name: string
+    name: string 
     description: string
     order: number
     roleRequired: string

@@ -97,4 +97,5 @@ export const ERR_SCREENSHOT_DISABLED =
   export const MSG_ADD_NEW_PROCESS_STEP_SUCCESS = "زیر فرآیند جدید با موفقیت ثبت شد."
   export const ERR_ENTER_NEW_PROCESS_STEP_NAME = "لطفا عنوان زیر فرآیند جدید را وارد نمایید."
   export const ERR_ENTER_NEW_PROCESS_STEP_DESC = "لطفا توضیحات زیر فرآیند جدید را وارد نمایید."
-  export const MSG_UPDATE_PROCESS_SUCCESS = "بروز رسانی فرآیند با موفقیت ثبت شد."
+  export const MSG_UPDATE_PROCESS_SUCCESS = "بروز رسانی فرآیند با موفقیت انجام شد."
+  export const MSG_UPDATE_PROCESS_STEP_SUCCESS = "بروز رسانی زیر فرآیند با موفقیت انجام شد."

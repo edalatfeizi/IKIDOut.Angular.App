@@ -8,6 +8,7 @@ import { AddProcessDto } from '../models/api/request/process/add-process-dto';
 import { NewProcessStepDto } from '../models/api/request/process/new-process-step-dto';
 import { ProcessStepResDto } from '../models/api/response/process/process-step-res-dto';
 import { UpdateProcessDto } from '../models/api/request/process/update-process-dto';
+import { UpdateProcessStepDto } from '../models/api/request/process/update-process-step-dto';
 
 // const AUTH_API = 'http://localhost:8080/api/auth/';
 
@@ -45,6 +46,16 @@ export class AppProcessesService {
     return this.http.post<BaseApiResponse<ProcessStepResDto>>(
       `${API_PROCESSES}/${processId}/step`,
       NewProcessStep,
+      httpOptions
+    );
+  }
+
+  updateProcessStep(processId: number,stepId: number,
+    step: UpdateProcessStepDto
+  ): Observable<BaseApiResponse<ProcessStepResDto>> {
+    return this.http.put<BaseApiResponse<ProcessStepResDto>>(
+      `${API_PROCESSES}/${processId}/step/${stepId}`,
+      step,
       httpOptions
     );
   }
