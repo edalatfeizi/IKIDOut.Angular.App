@@ -16,6 +16,8 @@ import { provideEffects } from '@ngrx/effects';
 import { ProductSendOutFlowsEffects } from './states/effects/product_send_out_flows.effects';
 import { toastReducer } from './states/reducers/toast.reducer';
 import { ToastEffects } from './states/effects/toast.effects';
+import { promptModalReducer } from './states/reducers/prompt-modal.reducer';
+import { modalReducer } from './states/reducers/modal.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,6 +33,9 @@ export const appConfig: ApplicationConfig = {
         loginToken: loginTokenReducer,
         toastState: toastReducer,
         productSendOutFlowsReducer: productSendOutFlowsReducer,
+        showModal: modalReducer,          // <— the slice App component selects
+        promptModal: promptModalReducer,
+
       },
       {
         runtimeChecks: {

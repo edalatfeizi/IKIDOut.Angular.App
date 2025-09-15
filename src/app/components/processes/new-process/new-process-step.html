@@ -151,13 +151,13 @@
                         <li>
                           
                          <a 
-                         data-bs-toggle="modal" data-bs-target="#exampleModalmdo" data-whatever="@fat" data-bs-original-title="" title="" (click)="setSelectedStep(processStep)">
+                         data-bs-toggle="modal" data-bs-target="#exampleModalmdo"  (click)="setSelectedStep(processStep)">
                             ویرایش
                             </a></li>
-                        <li> <a data-bs-original-title="" title="">
+                        <li> <a (click)="showDeleteProcessStepPrompt(processStep)" data-bs-toggle="modal" data-bs-target="#promptModal" >
                             حذف</a></li>
                      
-                        
+                            
                       </ul>
                     </div>
                   </div>
@@ -181,8 +181,6 @@
           </div>
         </div>
         
-        
-   
       </div>
     </div>
   </div>

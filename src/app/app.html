@@ -2,7 +2,7 @@
    <!-- Toast Message  Start-->
   <div class="container-fluid">
     <div class="todo">
-      <div
+      <!-- <div
         class="notification-popup"
         [class.hide]="!(isVisible$ | async)"
         [class.toast-success]="(toastType$ | async) === toastTypes.SUCCESS"
@@ -18,9 +18,8 @@
         [class.fa-check]="(toastType$ | async) === toastTypes.SUCCESS" 
         ></i>
         <span class="toast-message" [innerHTML]="toastMessage$ | async"></span>
-            <!-- <button (click)="triggerErrorToast()">Show error toast</button> -->
 
-      </div>
+      </div> -->
     </div>
   </div>
    <!-- Toast Message End-->
@@ -55,3 +54,10 @@
     }
   </div>
 </div>
+@if (promptData) {
+  <app-prompt
+  [title]="promptData!.title"
+  [description]="promptData!.description"
+  [promptCommand]="promptData!.promptCommand"
+></app-prompt>
+}

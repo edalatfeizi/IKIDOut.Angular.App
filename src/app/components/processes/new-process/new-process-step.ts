@@ -4,14 +4,21 @@ import { Store } from '@ngrx/store';
 import { ToastTypes } from '../../../enums/toast_types';
 import { showToast } from '../../../states/actions/toast.actions';
 import {
+  DELETE_PROCESS_STEP,
   ERR_ENTER_NEW_PROCESS_DESC,
   ERR_ENTER_NEW_PROCESS_NAME,
   ERR_ENTER_NEW_PROCESS_STEP_DESC,
   ERR_ENTER_NEW_PROCESS_STEP_NAME,
   ERR_INTERNAL_SERVER,
+  LOGOUT,
   MSG_ADD_NEW_PROCESS_STEP_SUCCESS,
+  MSG_ARE_YOU_SURE,
+  MSG_DELETE_PROCESS_STEP_SUCCESS,
+  MSG_DELETE_PROMPT,
+  MSG_LOGOUT_CONFIRM,
   MSG_UPDATE_PROCESS_STEP_SUCCESS,
   MSG_UPDATE_PROCESS_SUCCESS,
+  PROCESS_STEP,
 } from '../../../constants/Messages';
 import { AppProcessResDto } from '../../../models/api/response/process/app-process-res-dto';
 import { NewProcessStepDto } from '../../../models/api/request/process/new-process-step-dto';
@@ -22,6 +29,15 @@ import { AddProcessDto } from '../../../models/api/request/process/add-process-d
 import { UpdateProcessDto } from '../../../models/api/request/process/update-process-dto';
 import { FormsModule } from '@angular/forms';
 import { UpdateProcessStepDto } from '../../../models/api/request/process/update-process-step-dto';
+import { PromptData } from '../../../models/prompt_data';
+import {
+  CONFIRM_DELETE_PROCESS_STEP_COMMAND,
+  CONFIRM_LOGOUT_COMMAND,
+  DELETE_PROCESS_STEP_COMMAND,
+  LOGOUT_COMMAND,
+} from '../../../constants/prompt_commands';
+import { modalConfirmAction, setShowModalAction } from '../../../states/actions/modal.actions';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-new-process',
@@ -38,7 +54,19 @@ export class NewProcessStep implements OnInit {
   errorMessage = '';
   @ViewChild('btnCloseModal') btnCloseModal!: ElementRef<HTMLButtonElement>;
 
-  constructor(private processService: AppProcessesService, private store: Store) {}
+  constructor(
+    private processService: AppProcessesService,
+    private store: Store,
+    private actions$: Actions
+  ) {
+    this.actions$.pipe(ofType(modalConfirmAction)).subscribe((action) => {
+      switch (action.confirmCommand) {
+        case CONFIRM_DELETE_PROCESS_STEP_COMMAND:
+          this.deleteProcessStep();
+          break;
+      }
+    });
+  }
   ngOnInit(): void {
     this.process = history.state.process;
     if (this.process!.steps.length > 0) this.setProccessStepsData(this.process?.steps!);
@@ -63,11 +91,10 @@ export class NewProcessStep implements OnInit {
           Name: name,
           Description: description,
           RoleRequired: '',
-          ProcessStepTypeId : 0,
-          Order : 0
+          ProcessStepTypeId: 0,
+          Order: 0,
         };
         this.updateProcessStep(this.process!.id, this.selectedProcessStep!.id, updatedStep);
-
       }
     }
   }
@@ -105,6 +132,33 @@ export class NewProcessStep implements OnInit {
       },
     });
   }
+  deleteProcessStep() {
+    this.isLoading = true;
+    this.processService
+      .deleteProcessStep(this.process!.id, this.selectedProcessStep!.id)
+      .subscribe({
+        next: (data) => {
+          if (data.succeed) {
+            const current = this.processSteps$.getValue();
+            const updated = current.filter((step) => step.id !== this.selectedProcessStep!.id);
+            this.processSteps$.next(updated);
+            this.showMessage(MSG_DELETE_PROCESS_STEP_SUCCESS, ToastTypes.SUCCESS);
+          } else {
+            // this.errorMessage = data.message;
+            this.showMessage(data.message, ToastTypes.DANGER);
+
+            // this.eventService.showServerError(data)
+          }
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.isLoading = false;
+          //this.errorMessage = ERR_INTERNAL_SERVER;
+
+          this.showMessage(ERR_INTERNAL_SERVER, ToastTypes.DANGER);
+        },
+      });
+  }
   validateProcess(name: string, description: string) {
     if (name === '') {
       this.showMessage(ERR_ENTER_NEW_PROCESS_NAME, ToastTypes.DANGER);
@@ -129,7 +183,7 @@ export class NewProcessStep implements OnInit {
           this.showMessage(MSG_UPDATE_PROCESS_SUCCESS, ToastTypes.SUCCESS);
           //this.showProcess(data.data)
         } else {
-           this.errorMessage = data.message;
+          this.errorMessage = data.message;
           //this.showMessage(data.message, ToastTypes.DANGER);
 
           // this.eventService.showServerError(data)
@@ -138,7 +192,7 @@ export class NewProcessStep implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-         this.errorMessage = ERR_INTERNAL_SERVER;
+        this.errorMessage = ERR_INTERNAL_SERVER;
 
         //this.showMessage(ERR_INTERNAL_SERVER, ToastTypes.DANGER);
       },
@@ -154,15 +208,17 @@ export class NewProcessStep implements OnInit {
           this.errorMessage = data.message;
           return;
         }
-  
+
         // assuming data.data is the updated ProcessStepResDto
         const updatedStep: ProcessStepResDto = data.data;
-  
+
         // update BehaviorSubject immutably
         const current = this.processSteps$.getValue();
-        const updatedList = current.map(s => s.id === updatedStep.id ? { ...s, ...updatedStep } : s);
+        const updatedList = current.map((s) =>
+          s.id === updatedStep.id ? { ...s, ...updatedStep } : s
+        );
         this.processSteps$.next(updatedList);
-  
+
         this.btnCloseModal.nativeElement?.click();
         this.showMessage(MSG_UPDATE_PROCESS_STEP_SUCCESS, ToastTypes.SUCCESS);
       },
@@ -190,4 +246,16 @@ export class NewProcessStep implements OnInit {
   setSelectedStep(processStep: ProcessStepResDto) {
     this.selectedProcessStep = processStep;
   }
+
+  showDeleteProcessStepPrompt(step: ProcessStepResDto) {
+    this.setSelectedStep(step);
+    var promptData: PromptData = {
+      title: DELETE_PROCESS_STEP,
+      description: `${MSG_DELETE_PROMPT} ${PROCESS_STEP} ${step.name} ${MSG_ARE_YOU_SURE}`,
+      promptCommand: DELETE_PROCESS_STEP_COMMAND,
+    };
+    this.store.dispatch(setShowModalAction({ showModalName: 'Prompt', data: promptData }));
+  }
+
+  
 }

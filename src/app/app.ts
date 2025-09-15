@@ -18,30 +18,38 @@ import { ToastModel } from './models/toast_model';
 import { ToastState } from './states/reducers/toast.reducer';
 import { ToastTypes } from './enums/toast_types';
 import { clearToastMessage, showToast } from './states/actions/toast.actions';
+import { PromptComponent } from './components/common/modals/prompt/prompt.component';
+import { PromptData } from './models/prompt_data';
+import { DELETE_PROCESS_STEP_COMMAND, LOGOUT_COMMAND } from './constants/prompt_commands';
+import { ModalState } from './states/selectors/states/modal-states.state';
+import { selectModalState } from './states/selectors/modal.selectors';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, Sidebar, Footer, AsyncPipe],
+  imports: [RouterOutlet, Header, Sidebar, Footer, AsyncPipe, PromptComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App implements OnInit, OnDestroy {
+  promptData: PromptData | null = null;
+  showModal$: Observable<ModalState>;
+
   protected readonly title = signal('IKIDOut.Angular.App');
   storageService = inject(StorageService);
 
   unsubscribeAuthState$ = new Subject<void>();
   toastModel: ToastState | null = null;
-  private store = inject(Store);
+   private store = inject(Store);
   private destroy$ = new Subject<void>();
   countdownSubscription: Subscription | null = null; // Track countdown subscription
 
- // expose enums for template comparisons
- toastTypes = ToastTypes;
+  // expose enums for template comparisons
+  toastTypes = ToastTypes;
 
- // single source of truth via async pipes
- toastMessage$: Observable<string | null> = this.store.select(selectToastMessage);
- toastType$: Observable<ToastTypes> = this.store.select(selectToastType);
- isVisible$: Observable<boolean> = this.store.select(selectIsToastVisible);
-  
+  // single source of truth via async pipes
+  // toastMessage$: Observable<string | null> = this.store.select(selectToastMessage);
+  // toastType$: Observable<ToastTypes> = this.store.select(selectToastType);
+  // isVisible$: Observable<boolean> = this.store.select(selectIsToastVisible);
+
   constructor() {
     // this.store
     //   .select(selectShowToast)
@@ -51,9 +59,22 @@ export class App implements OnInit, OnDestroy {
     //       this.toastModel = toast;
     //     }
     //   });
-  
+    this.showModal$ = this.store.select(selectModalState); // or 'showModal' string key
+
+    this.showModal$.subscribe((modalState) => {
+      // modalState is now an object with {showModal, data} from initial state onwards
+      switch ((modalState.data as PromptData).promptCommand) {
+        case LOGOUT_COMMAND:
+        case DELETE_PROCESS_STEP_COMMAND:
+          this.promptData = modalState.data as PromptData;
+          break;
+        default:
+          this.promptData = null;
+      }
+    });
+
   }
-  
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -65,8 +86,8 @@ export class App implements OnInit, OnDestroy {
     // });
   }
 
-   // optional manual dismiss (clicking the ×)
-   dismissToast() {
+  // optional manual dismiss (clicking the ×)
+  dismissToast() {
     this.store.dispatch(clearToastMessage());
   }
 
@@ -76,7 +97,7 @@ export class App implements OnInit, OnDestroy {
       showToast({ toastModel: { toastType: ToastTypes.DANGER, message: 'Login failed' } })
     );
   }
-  checkUserAuthorized(){
+  checkUserAuthorized() {
     return this.storageService.isConfirmed() && this.storageService.isPassChanged();
   }
 }

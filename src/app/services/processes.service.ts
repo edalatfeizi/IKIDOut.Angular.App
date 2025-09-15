@@ -59,4 +59,11 @@ export class AppProcessesService {
       httpOptions
     );
   }
+
+  deleteProcessStep(processId: number,processStepId: number): Observable<BaseApiResponse<ProcessStepResDto>> {
+    return this.http.delete<BaseApiResponse<ProcessStepResDto>>(
+      `${API_PROCESSES}/${processId}/step/${processStepId}`,
+      httpOptions
+    );
+  }
 }
