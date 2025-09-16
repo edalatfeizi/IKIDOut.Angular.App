@@ -1,12 +1,16 @@
-.switch{
-    position: absolute;
-    right: 15px;
-    top: 15px;
+.switch {
+  position: absolute;
+  right: 15px;
+  top: 15px;
 }
 
-.process-icon{
-    margin-left: 10px;
+.process-icon {
+  margin-left: 10px;
 }
 .process {
-    cursor: pointer;
+  cursor: pointer;
+}
+.card-header {
+  margin-top: 5px;
+  margin-right: 5px;
 }

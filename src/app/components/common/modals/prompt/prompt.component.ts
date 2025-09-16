@@ -4,13 +4,17 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
 import {
   CONFIRM_DELETE_PERMISSION,
+  CONFIRM_DELETE_PROCESS_COMMAND,
   CONFIRM_DELETE_PROCESS_STEP_COMMAND,
   CONFIRM_DELETE_USER_ROLE,
   CONFIRM_LOGOUT_COMMAND,
+  CONFIRM_RESTORE_PROCESS_COMMAND,
   DELETE_PERMISSION_COMMAND,
+  DELETE_PROCESS_COMMAND,
   DELETE_PROCESS_STEP_COMMAND,
   DELETE_USER_ROLE_COMMAND,
   LOGOUT_COMMAND,
+  RESTORE_PROCESS_COMMAND,
 } from '../../../../constants/prompt_commands';
 import { modalConfirmAction } from '../../../../states/actions/modal.actions';
 
@@ -54,6 +58,16 @@ export class PromptComponent implements OnInit, OnChanges {
       case DELETE_PROCESS_STEP_COMMAND:
         this.store.dispatch(
           modalConfirmAction({ confirmCommand: CONFIRM_DELETE_PROCESS_STEP_COMMAND })
+        );
+        break;
+
+      case DELETE_PROCESS_COMMAND:
+        this.store.dispatch(modalConfirmAction({ confirmCommand: CONFIRM_DELETE_PROCESS_COMMAND }));
+        break;
+
+      case RESTORE_PROCESS_COMMAND:
+        this.store.dispatch(
+          modalConfirmAction({ confirmCommand: CONFIRM_RESTORE_PROCESS_COMMAND })
         );
         break;
     }

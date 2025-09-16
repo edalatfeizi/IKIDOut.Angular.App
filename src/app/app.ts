@@ -20,7 +20,12 @@ import { ToastTypes } from './enums/toast_types';
 import { clearToastMessage, showToast } from './states/actions/toast.actions';
 import { PromptComponent } from './components/common/modals/prompt/prompt.component';
 import { PromptData } from './models/prompt_data';
-import { DELETE_PROCESS_STEP_COMMAND, LOGOUT_COMMAND } from './constants/prompt_commands';
+import {
+  DELETE_PROCESS_COMMAND,
+  DELETE_PROCESS_STEP_COMMAND,
+  LOGOUT_COMMAND,
+  RESTORE_PROCESS_COMMAND,
+} from './constants/prompt_commands';
 import { ModalState } from './states/selectors/states/modal-states.state';
 import { selectModalState } from './states/selectors/modal.selectors';
 @Component({
@@ -38,7 +43,7 @@ export class App implements OnInit, OnDestroy {
 
   unsubscribeAuthState$ = new Subject<void>();
   toastModel: ToastState | null = null;
-   private store = inject(Store);
+  private store = inject(Store);
   private destroy$ = new Subject<void>();
   countdownSubscription: Subscription | null = null; // Track countdown subscription
 
@@ -46,9 +51,9 @@ export class App implements OnInit, OnDestroy {
   toastTypes = ToastTypes;
 
   // single source of truth via async pipes
-  // toastMessage$: Observable<string | null> = this.store.select(selectToastMessage);
-  // toastType$: Observable<ToastTypes> = this.store.select(selectToastType);
-  // isVisible$: Observable<boolean> = this.store.select(selectIsToastVisible);
+  toastMessage$: Observable<string | null> = this.store.select(selectToastMessage);
+  toastType$: Observable<ToastTypes> = this.store.select(selectToastType);
+  isVisible$: Observable<boolean> = this.store.select(selectIsToastVisible);
 
   constructor() {
     // this.store
@@ -66,13 +71,15 @@ export class App implements OnInit, OnDestroy {
       switch ((modalState.data as PromptData).promptCommand) {
         case LOGOUT_COMMAND:
         case DELETE_PROCESS_STEP_COMMAND:
+        case DELETE_PROCESS_COMMAND:
+        case RESTORE_PROCESS_COMMAND:
           this.promptData = modalState.data as PromptData;
           break;
+
         default:
           this.promptData = null;
       }
     });
-
   }
 
   ngOnDestroy(): void {

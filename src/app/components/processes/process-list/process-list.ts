@@ -5,16 +5,36 @@ import { ToastTypes } from '../../../enums/toast_types';
 import { Store } from '@ngrx/store';
 import { showToast } from '../../../states/actions/toast.actions';
 import {
+  DELETE_PROCESS,
+  DELETE_PROCESS_STEP,
   ERR_CANNOT_CONNECT_SERVER,
   ERR_ENTER_NEW_PROCESS_DESC,
   ERR_ENTER_NEW_PROCESS_NAME,
   ERR_INTERNAL_SERVER,
   MSG_ADD_NEW_PROCESS_SUCCESS,
+  MSG_ARE_YOU_SURE,
+  MSG_DELETE_PROCESS_STEP_SUCCESS,
+  MSG_DELETE_PROCESS_SUCCESS,
+  MSG_DELETE_PROMPT,
+  MSG_RESTORE_PROCESS_SUCCESS,
+  MSG_RESTORE_PROMPT,
+  PROCESS,
+  RESTORE_PROCESS,
 } from '../../../constants/Messages';
 import { BehaviorSubject } from 'rxjs';
 import { AppProcessResDto } from '../../../models/api/response/process/app-process-res-dto';
 import { CommonModule } from '@angular/common';
 import { AddProcessDto } from '../../../models/api/request/process/add-process-dto';
+import { PromptData } from '../../../models/prompt_data';
+import {
+  CONFIRM_DELETE_PROCESS_COMMAND,
+  CONFIRM_RESTORE_PROCESS_COMMAND,
+  DELETE_PROCESS_COMMAND,
+  DELETE_PROCESS_STEP_COMMAND,
+  RESTORE_PROCESS_COMMAND,
+} from '../../../constants/prompt_commands';
+import { modalConfirmAction, setShowModalAction } from '../../../states/actions/modal.actions';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-process-list',
@@ -25,14 +45,29 @@ import { AddProcessDto } from '../../../models/api/request/process/add-process-d
 export class ProcessList implements OnInit {
   isLoading = false;
   processes$ = new BehaviorSubject<AppProcessResDto[]>([]);
+  selectedProcess: AppProcessResDto | null = null;
   errorMessage = '';
   @ViewChild('btnCloseModal') btnCloseModal!: ElementRef<HTMLButtonElement>;
 
   constructor(
     private appProcessesService: AppProcessesService,
     private store: Store,
-    private router: Router
-  ) {}
+    private router: Router,
+    private actions$: Actions
+  ) {
+
+       this.actions$.pipe(ofType(modalConfirmAction)).subscribe((action) => {
+          switch (action.confirmCommand) {
+            case CONFIRM_DELETE_PROCESS_COMMAND:
+              this.deleteProcess();
+              break;
+
+              case CONFIRM_RESTORE_PROCESS_COMMAND:
+              this.restoreProcess();
+              break;
+          }
+        });
+  }
   ngOnInit(): void {
     this.getAppProccesses();
   }
@@ -98,7 +133,7 @@ export class ProcessList implements OnInit {
         if (data.succeed) {
           this.btnCloseModal.nativeElement?.click();
           this.showMessage(MSG_ADD_NEW_PROCESS_SUCCESS, ToastTypes.SUCCESS);
-            this.showProcess(data.data)
+          this.showProcess(data.data);
         } else {
           this.errorMessage = data.message;
           // this.showMessage(data.message, ToastTypes.DANGER);
@@ -115,10 +150,96 @@ export class ProcessList implements OnInit {
       },
     });
   }
-  showProcess(process: AppProcessResDto){
+  deleteProcess() {
+      this.isLoading = true;
+      this.appProcessesService
+        .deleteProcess(this.selectedProcess!.id)
+        .subscribe({
+          next: (data) => {
+            if (data.succeed) {
+       
+
+
+              const processes = this.processes$.getValue();
+
+              const updated = processes.map(p =>
+                p.id === this.selectedProcess!.id ? { ...p, active: false } : p
+              );
+            
+              this.processes$.next(updated);
+              this.showMessage(MSG_DELETE_PROCESS_SUCCESS, ToastTypes.SUCCESS);
+              
+            } else {
+              // this.errorMessage = data.message;
+              this.showMessage(data.message, ToastTypes.DANGER);
+  
+              // this.eventService.showServerError(data)
+            }
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.isLoading = false;
+            //this.errorMessage = ERR_INTERNAL_SERVER;
+  
+            this.showMessage(ERR_INTERNAL_SERVER, ToastTypes.DANGER);
+          },
+        });
+    }
+
+    restoreProcess() {
+      this.isLoading = true;
+      this.appProcessesService
+        .restoreProcess(this.selectedProcess!.id)
+        .subscribe({
+          next: (data) => {
+            if (data.succeed) {
+              const processes = this.processes$.getValue();
+
+              const updated = processes.map(p =>
+                p.id === this.selectedProcess!.id ? { ...p, active: true } : p
+              );
+            
+              this.processes$.next(updated);
+              this.showMessage(MSG_RESTORE_PROCESS_SUCCESS, ToastTypes.SUCCESS);
+            } else {
+              // this.errorMessage = data.message;
+              this.showMessage(data.message, ToastTypes.DANGER);
+  
+              // this.eventService.showServerError(data)
+            }
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.isLoading = false;
+            //this.errorMessage = ERR_INTERNAL_SERVER;
+  
+            this.showMessage(ERR_INTERNAL_SERVER, ToastTypes.DANGER);
+          },
+        });
+    }
+  showProcess(process: AppProcessResDto) {
     this.router.navigate(['processes/new'], {
       state: { process: process },
       replaceUrl: true,
     });
+  }
+
+  showDeleteProcessPrompt(process: AppProcessResDto) {
+    this.selectedProcess = process;
+    var promptData: PromptData = {
+      title: DELETE_PROCESS,
+      description: `${MSG_DELETE_PROMPT} ${PROCESS} ${process.name} ${MSG_ARE_YOU_SURE}`,
+      promptCommand: DELETE_PROCESS_COMMAND,
+    };
+    this.store.dispatch(setShowModalAction({ showModalName: 'Prompt', data: promptData }));
+  }
+  showActivateProcessPrompt(process: AppProcessResDto) {
+    this.selectedProcess = process;
+    var promptData: PromptData = {
+      title: RESTORE_PROCESS,
+      description: `${MSG_RESTORE_PROMPT} ${PROCESS} ${process.name} ${MSG_ARE_YOU_SURE}`,
+      promptCommand: RESTORE_PROCESS_COMMAND,
+    };
+    this.store.dispatch(setShowModalAction({ showModalName: 'Prompt', data: promptData }));
   }
 }

@@ -197,13 +197,34 @@
                     "
                   >
                   <div class="col-xl-6 xl-100 box-col-12">
-                    <div class="card process" (click)="showProcess(process)">
-                      <div class="job-search">
+                    <div class="card process">
+                      <div class="card-header card-no-border">
+                        <div class="media media-dashboard">
+                          <div class="media-body">
+                            <h6 class="f-w-600">{{process.name}}</h6>
+                          </div>
+                          <div class="icon-box onhover-dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                            <div class="icon-box-show onhover-show-div">
+                              <ul>
+                                @if(process!.active){
+                                  <li> <a (click)="showDeleteProcessPrompt(process)" data-bs-toggle="modal" data-bs-target="#promptModal">حذف فرآیند</a></li>
+                                }@else {
+                                  <li> <a (click)="showActivateProcessPrompt(process)" data-bs-toggle="modal" data-bs-target="#promptModal">بازیابی فرآیند</a></li>
+
+                                }
+                                
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="job-search"  (click)="showProcess(process)">
+              
                         <div class="card-body">
                           <div class="media">
                             <img class="process-icon" src="../../../../assets/images/svg/process.svg" alt="process icon" width="24" height="24" />
                             <div class="media-body">
-                              <h6 class="f-w-600"><a href="job-details.html">{{process.name}}</a>
+                              <h6 class="f-w-600"><a></a>
                                 <!-- <span class="badge badge-primary pull-right">جدید</span> -->
                                 <span class="badge pull-right digits"
                                 [class.badge-success]="process.active"
@@ -225,7 +246,9 @@
                                 <li><i class="fa fa-star font-warning"></i></li>
                               </ul> -->
                             </div>
+                        
                           </div>
+                    
                           <p>{{process.description}}</p>
                         </div>
                       </div>
@@ -254,8 +277,8 @@
                 >
                 @if(!process.active){
                   <div class="col-xl-6 xl-100 box-col-12">
-                    <div class="card">
-                      <div class="job-search">
+                    <div class="card process">
+                      <div class="job-search" (click)="showProcess(process)">
                         <div class="card-body">
                           <div class="media">
                             <img class="process-icon" src="../../../../assets/images/svg/process.svg" alt="process icon" width="24" height="24" />
@@ -312,7 +335,7 @@
                 @if(process.active){
                   <div class="col-xl-6 xl-100 box-col-12">
                     <div class="card">
-                      <div class="job-search">
+                      <div class="job-search process" (click)="showProcess(process)">
                         <div class="card-body">
                           <div class="media">
                             <img class="process-icon" src="../../../../assets/images/svg/process.svg" alt="process icon" width="24" height="24" />

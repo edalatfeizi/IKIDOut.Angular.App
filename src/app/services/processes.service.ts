@@ -33,14 +33,18 @@ export class AppProcessesService {
       httpOptions
     );
   }
-  updateProcess(processId: number, process: UpdateProcessDto): Observable<BaseApiResponse<AppProcessResDto>> {
+  updateProcess(
+    processId: number,
+    process: UpdateProcessDto
+  ): Observable<BaseApiResponse<AppProcessResDto>> {
     return this.http.put<BaseApiResponse<AppProcessResDto>>(
       `${API_PROCESSES}/${processId}`,
       process,
       httpOptions
     );
   }
-  addProcessStep(processId: number,
+  addProcessStep(
+    processId: number,
     NewProcessStep: NewProcessStepDto
   ): Observable<BaseApiResponse<ProcessStepResDto>> {
     return this.http.post<BaseApiResponse<ProcessStepResDto>>(
@@ -50,7 +54,9 @@ export class AppProcessesService {
     );
   }
 
-  updateProcessStep(processId: number,stepId: number,
+  updateProcessStep(
+    processId: number,
+    stepId: number,
     step: UpdateProcessStepDto
   ): Observable<BaseApiResponse<ProcessStepResDto>> {
     return this.http.put<BaseApiResponse<ProcessStepResDto>>(
@@ -60,9 +66,26 @@ export class AppProcessesService {
     );
   }
 
-  deleteProcessStep(processId: number,processStepId: number): Observable<BaseApiResponse<ProcessStepResDto>> {
+  deleteProcessStep(
+    processId: number,
+    processStepId: number
+  ): Observable<BaseApiResponse<ProcessStepResDto>> {
     return this.http.delete<BaseApiResponse<ProcessStepResDto>>(
       `${API_PROCESSES}/${processId}/step/${processStepId}`,
+      httpOptions
+    );
+  }
+
+  deleteProcess(processId: number): Observable<BaseApiResponse<AppProcessResDto>> {
+    return this.http.delete<BaseApiResponse<AppProcessResDto>>(
+      `${API_PROCESSES}/${processId}`,
+      httpOptions
+    );
+  }
+
+  restoreProcess(processId: number): Observable<BaseApiResponse<AppProcessResDto>> {
+    return this.http.post<BaseApiResponse<AppProcessResDto>>(
+      `${API_PROCESSES}/${processId}/restore`,
       httpOptions
     );
   }
