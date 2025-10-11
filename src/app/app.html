@@ -54,10 +54,16 @@
     }
   </div>
 </div>
-@if (promptData) {
+@if (promptData?.promptCommand === deleteNodePrompModal ) {
   <app-prompt
   [title]="promptData!.title"
   [description]="promptData!.description"
   [promptCommand]="promptData!.promptCommand"
 ></app-prompt>
+}@else if (promptData?.promptCommand === selectConfirmerPrompModal) {
+  <app-select-confirmer
+  [title]="promptData!.title"
+  [description]="promptData!.description"
+  [promptCommand]="promptData!.promptCommand"
+></app-select-confirmer>
 }

@@ -21,7 +21,7 @@ import {
   PROCESS,
   RESTORE_PROCESS,
 } from '../../../constants/Messages';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, forkJoin, map } from 'rxjs';
 import { AppProcessResDto } from '../../../models/api/response/process/app-process-res-dto';
 import { CommonModule } from '@angular/common';
 import { AddProcessDto } from '../../../models/api/request/process/add-process-dto';
@@ -35,6 +35,9 @@ import {
 } from '../../../constants/prompt_commands';
 import { modalConfirmAction, setShowModalAction } from '../../../states/actions/modal.actions';
 import { Actions, ofType } from '@ngrx/effects';
+import { FlowchartResDto } from '../../../models/api/response/flowchart/flowchart_res_dto';
+import { FlowChartService } from '../../../services/flowchart.service';
+import { AddFlowchartDto } from '../../../models/api/request/flowchart/add_flowchart_dto';
 
 @Component({
   selector: 'app-process-list',
@@ -44,29 +47,29 @@ import { Actions, ofType } from '@ngrx/effects';
 })
 export class ProcessList implements OnInit {
   isLoading = false;
-  processes$ = new BehaviorSubject<AppProcessResDto[]>([]);
-  selectedProcess: AppProcessResDto | null = null;
+  flowcharts$ = new BehaviorSubject<FlowchartResDto[]>([]);
+  showingFlowcharts$ = new BehaviorSubject<FlowchartResDto[]>([]);
+  selectedFlowchart: FlowchartResDto | null = null;
   errorMessage = '';
   @ViewChild('btnCloseModal') btnCloseModal!: ElementRef<HTMLButtonElement>;
 
   constructor(
-    private appProcessesService: AppProcessesService,
+    private flowchartsService: FlowChartService,
     private store: Store,
     private router: Router,
     private actions$: Actions
   ) {
+    this.actions$.pipe(ofType(modalConfirmAction)).subscribe((action) => {
+      switch (action.confirmCommand) {
+        case CONFIRM_DELETE_PROCESS_COMMAND:
+          this.deleteProcess();
+          break;
 
-       this.actions$.pipe(ofType(modalConfirmAction)).subscribe((action) => {
-          switch (action.confirmCommand) {
-            case CONFIRM_DELETE_PROCESS_COMMAND:
-              this.deleteProcess();
-              break;
-
-              case CONFIRM_RESTORE_PROCESS_COMMAND:
-              this.restoreProcess();
-              break;
-          }
-        });
+        case CONFIRM_RESTORE_PROCESS_COMMAND:
+          this.restoreProcess();
+          break;
+      }
+    });
   }
   ngOnInit(): void {
     this.getAppProccesses();
@@ -74,7 +77,7 @@ export class ProcessList implements OnInit {
 
   getAppProccesses() {
     this.isLoading = true;
-    this.appProcessesService.getAppProcesses().subscribe({
+    this.flowchartsService.getAppFlowcharts().subscribe({
       next: (data) => {
         this.isLoading = false;
         if (data.succeed) {
@@ -94,19 +97,79 @@ export class ProcessList implements OnInit {
       },
     });
   }
-
-  private setProccessesData(data: AppProcessResDto[]) {
-    const newProcesses = data.map((doc: AppProcessResDto) => ({
+  // getFlowchartMermaid(id: number) {
+  //   this.isLoading = true;
+  //   this.flowchartsService.getFlowchartMermaid(id).subscribe({
+  //     next: (data) => {
+  //       this.isLoading = false;
+  //       if (data.succeed) {
+  //         var d = data.data.flowchart.replace(/\r\n/g, '\n')   // normalize Windows newlines
+  //         .replace(/\r/g, '\n');
+          
+          
+  //       } else {
+  //         this.showMessage(data.message, ToastTypes.DANGER);
+  //       }
+  //     },
+  //     error: (err) => {
+  //       this.isLoading = false;
+  //       this.showMessage(ERR_CANNOT_CONNECT_SERVER, ToastTypes.SUCCESS);
+  //     },
+  //   });
+  // }
+  private setProccessesData(data: FlowchartResDto[]) {
+    const newProcesses = data.map((doc: FlowchartResDto) => ({
       ...doc,
       isSelected: false,
     }));
 
-    const currentProcesses = this.processes$.getValue();
-    const updatedProcesses = [...currentProcesses, ...newProcesses];
-    this.processes$.next(updatedProcesses);
+  // Create an array of observables for each process
+  const requests = newProcesses.map(proc =>
+    this.flowchartsService.getFlowchartMermaid(proc.id).pipe(
+      map(res => {
+        if (res.succeed) {
+          // normalize line breaks
+          proc.flowcharDef = res.data.flowchart
+            // .replace(/\r\n/g, '\n')
+            // .replace(/\r/g, '\n');
+        } else {
+          this.showMessage(res.message, ToastTypes.DANGER);
+        }
+        return proc;
+      })
+    )
+  );
+  // Run all requests in parallel
+  forkJoin(requests).subscribe({
+    next: (processesWithFlowcharts) => {
+      const currentProcesses = this.flowcharts$.getValue();
+      const updatedProcesses = [...currentProcesses, ...processesWithFlowcharts];
+
+      this.flowcharts$.next(updatedProcesses);
+      this.filterProcesses(undefined);
+    },
+    error: () => {
+      this.showMessage(ERR_CANNOT_CONNECT_SERVER, ToastTypes.DANGER);
+    }
+  });
+    // const currentProcesses = this.flowcharts$.getValue();
+    // const updatedProcesses = [...currentProcesses, ...newProcesses];
+
+    // this.flowcharts$.next(updatedProcesses);
+    // this.filterProcesses(undefined)
   }
-  trackByProcessId(index: number, process: AppProcessResDto): number {
-    return process.id; // Assuming 'id' is a unique identifier for each document
+  filterProcesses(active: boolean | undefined) {
+    if (active == undefined) {
+      this.showingFlowcharts$.next(this.flowcharts$.getValue());
+    } else {
+      this.showingFlowcharts$.next([]);
+      const current = this.flowcharts$.getValue(); // get the current value
+      const filtered = current.filter((proc) => proc.active === active);
+      this.showingFlowcharts$.next(filtered);
+    }
+  }
+  trackByFlowchartId(index: number, flowchart: FlowchartResDto): number {
+    return flowchart.id; // Assuming 'id' is a unique identifier for each document
   }
   showMessage(message: string, toastType: ToastTypes) {
     this.store.dispatch(showToast({ toastModel: { toastType: toastType, message: message } }));
@@ -119,21 +182,21 @@ export class ProcessList implements OnInit {
       // this.showMessage( ERR_ENTER_NEW_PROCESS_DESC,ToastTypes.DANGER)
       this.errorMessage = ERR_ENTER_NEW_PROCESS_DESC;
     } else {
-      var newProcess: AddProcessDto = {
+      var flowchart: AddFlowchartDto = {
         Name: name,
         Description: description,
       };
-      this.addProcess(newProcess);
+      this.addFlowchart(flowchart);
     }
   }
-  addProcess(newProcess: AddProcessDto) {
+  addFlowchart(flowchart: AddFlowchartDto) {
     this.isLoading = true;
-    this.appProcessesService.addProcess(newProcess).subscribe({
+    this.flowchartsService.addFlowchart(flowchart).subscribe({
       next: (data) => {
         if (data.succeed) {
           this.btnCloseModal.nativeElement?.click();
           this.showMessage(MSG_ADD_NEW_PROCESS_SUCCESS, ToastTypes.SUCCESS);
-          this.showProcess(data.data);
+          this.showFlowchart(data.data);
         } else {
           this.errorMessage = data.message;
           // this.showMessage(data.message, ToastTypes.DANGER);
@@ -151,93 +214,85 @@ export class ProcessList implements OnInit {
     });
   }
   deleteProcess() {
-      this.isLoading = true;
-      this.appProcessesService
-        .deleteProcess(this.selectedProcess!.id)
-        .subscribe({
-          next: (data) => {
-            if (data.succeed) {
-       
+    this.isLoading = true;
+    this.flowchartsService.deleteFlowchart(this.selectedFlowchart!.id).subscribe({
+      next: (data) => {
+        if (data.succeed) {
+          const processes = this.flowcharts$.getValue();
 
+          const updated = processes.map((p) =>
+            p.id === this.selectedFlowchart!.id ? { ...p, active: false } : p
+          );
 
-              const processes = this.processes$.getValue();
+          this.flowcharts$.next(updated);
+          this.showMessage(MSG_DELETE_PROCESS_SUCCESS, ToastTypes.SUCCESS);
+        } else {
+          // this.errorMessage = data.message;
+          this.showMessage(data.message, ToastTypes.DANGER);
 
-              const updated = processes.map(p =>
-                p.id === this.selectedProcess!.id ? { ...p, active: false } : p
-              );
-            
-              this.processes$.next(updated);
-              this.showMessage(MSG_DELETE_PROCESS_SUCCESS, ToastTypes.SUCCESS);
-              
-            } else {
-              // this.errorMessage = data.message;
-              this.showMessage(data.message, ToastTypes.DANGER);
-  
-              // this.eventService.showServerError(data)
-            }
-            this.isLoading = false;
-          },
-          error: (err) => {
-            this.isLoading = false;
-            //this.errorMessage = ERR_INTERNAL_SERVER;
-  
-            this.showMessage(ERR_INTERNAL_SERVER, ToastTypes.DANGER);
-          },
-        });
-    }
+          // this.eventService.showServerError(data)
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.isLoading = false;
+        //this.errorMessage = ERR_INTERNAL_SERVER;
 
-    restoreProcess() {
-      this.isLoading = true;
-      this.appProcessesService
-        .restoreProcess(this.selectedProcess!.id)
-        .subscribe({
-          next: (data) => {
-            if (data.succeed) {
-              const processes = this.processes$.getValue();
+        this.showMessage(ERR_INTERNAL_SERVER, ToastTypes.DANGER);
+      },
+    });
+  }
 
-              const updated = processes.map(p =>
-                p.id === this.selectedProcess!.id ? { ...p, active: true } : p
-              );
-            
-              this.processes$.next(updated);
-              this.showMessage(MSG_RESTORE_PROCESS_SUCCESS, ToastTypes.SUCCESS);
-            } else {
-              // this.errorMessage = data.message;
-              this.showMessage(data.message, ToastTypes.DANGER);
-  
-              // this.eventService.showServerError(data)
-            }
-            this.isLoading = false;
-          },
-          error: (err) => {
-            this.isLoading = false;
-            //this.errorMessage = ERR_INTERNAL_SERVER;
-  
-            this.showMessage(ERR_INTERNAL_SERVER, ToastTypes.DANGER);
-          },
-        });
-    }
-  showProcess(process: AppProcessResDto) {
+  restoreProcess() {
+    // this.isLoading = true;
+    // this.appProcessesService.restoreProcess(this.selectedFlowchart!.id).subscribe({
+    //   next: (data) => {
+    //     if (data.succeed) {
+    //       const processes = this.flowcharts$.getValue();
+
+    //       const updated = processes.map((p) =>
+    //         p.id === this.selectedFlowchart!.id ? { ...p, active: true } : p
+    //       );
+
+    //       this.flowcharts$.next(updated);
+    //       this.showMessage(MSG_RESTORE_PROCESS_SUCCESS, ToastTypes.SUCCESS);
+    //     } else {
+    //       // this.errorMessage = data.message;
+    //       this.showMessage(data.message, ToastTypes.DANGER);
+
+    //       // this.eventService.showServerError(data)
+    //     }
+    //     this.isLoading = false;
+    //   },
+    //   error: (err) => {
+    //     this.isLoading = false;
+    //     //this.errorMessage = ERR_INTERNAL_SERVER;
+
+    //     this.showMessage(ERR_INTERNAL_SERVER, ToastTypes.DANGER);
+    //   },
+    // });
+  }
+  showFlowchart(flowchart: FlowchartResDto) {
     this.router.navigate(['processes/new'], {
-      state: { process: process },
+      state: { flowchart: flowchart },
       replaceUrl: true,
     });
   }
 
-  showDeleteProcessPrompt(process: AppProcessResDto) {
-    this.selectedProcess = process;
+  showDeleteProcessPrompt(flowchart: FlowchartResDto) {
+    this.selectedFlowchart = flowchart;
     var promptData: PromptData = {
       title: DELETE_PROCESS,
-      description: `${MSG_DELETE_PROMPT} ${PROCESS} ${process.name} ${MSG_ARE_YOU_SURE}`,
+      description: `${MSG_DELETE_PROMPT} ${PROCESS} ${flowchart.name} ${MSG_ARE_YOU_SURE}`,
       promptCommand: DELETE_PROCESS_COMMAND,
     };
     this.store.dispatch(setShowModalAction({ showModalName: 'Prompt', data: promptData }));
   }
-  showActivateProcessPrompt(process: AppProcessResDto) {
-    this.selectedProcess = process;
+  showActivateProcessPrompt(flowchart: FlowchartResDto) {
+    this.selectedFlowchart = flowchart;
     var promptData: PromptData = {
       title: RESTORE_PROCESS,
-      description: `${MSG_RESTORE_PROMPT} ${PROCESS} ${process.name} ${MSG_ARE_YOU_SURE}`,
+      description: `${MSG_RESTORE_PROMPT} ${PROCESS} ${flowchart.name} ${MSG_ARE_YOU_SURE}`,
       promptCommand: RESTORE_PROCESS_COMMAND,
     };
     this.store.dispatch(setShowModalAction({ showModalName: 'Prompt', data: promptData }));

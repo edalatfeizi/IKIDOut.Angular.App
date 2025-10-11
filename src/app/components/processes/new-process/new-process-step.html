@@ -8,112 +8,211 @@
       </div>
     </div>
   </div>
-  <div class="container-fluid" [class.disabled]="!process?.active">
+  <div class="container-fluid" [class.disabled]="!flowchart?.active">
     <div class="row">
-      <div class="col-sm-12">
-        <div class="card" >
-          <!-- <div class="card-header pb-0">
-                <h5>ثبت فرآیند جدید</h5>
-              </div> -->
-          <div class="card-body" >
-            <div class="form theme-form projectcreate">
-              <div class="row">
-                <div class="col">
-                  <div class="mb-3" >
-                    <label>عنوان</label>
-                    <input [disabled]="!process?.active" #processName class="form-control" type="text" placeholder="" value="{{process?.name}}" />
-                  </div>
+     <div class="col-sm-12">
+      <div class="card">
+        <!-- <div class="card-header pb-0">
+              <h5>ثبت فرآیند جدید</h5>
+            </div> -->
+        <div class="card-body">
+          <div class="form theme-form projectcreate">
+            <div class="row">
+              <div class="col">
+                <div class="mb-3">
+                  <label>عنوان</label>
+                  <input
+                    [disabled]="!flowchart?.active"
+                    #processName
+                    class="form-control"
+                    type="text"
+                    placeholder=""
+                    value="{{ flowchart?.name }}"
+                  />
                 </div>
               </div>
-              <div class="row">
-                <div class="col">
-                  <div class="mb-3">
-                    <label>توضیحات</label>
-                    <input [disabled]="!process?.active" #processDesc class="form-control" type="text" placeholder="" value="{{process?.description}}" />
-                  </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="mb-3">
+                  <label>توضیحات</label>
+                  <input
+                    [disabled]="!flowchart?.active"
+                    #processDesc
+                    class="form-control"
+                    type="text"
+                    placeholder=""
+                    value="{{ flowchart?.description }}"
+                  />
                 </div>
               </div>
+            </div>
 
-              <div class="row">
-                <div class="col">
-                  <div class="btn btn-primary btn-block"
-                  [class.disabled]="isLoading || !process?.active"
+            <div class="row">
+              <div class="col">
+                <div
+                  class="btn btn-primary btn-block"
+                  [class.disabled]="isLoading || !flowchart?.active"
                   [class.pointer-events-none]="isLoading"
                   (click)="validateProcess(processName.value, processDesc.value)"
-                  >
-                    @if(!isLoading) {
-                      <span >ثبت اطلاعات</span>
-                    } @else{
-                      <div class="loader-box">
-                        <div class="loader-7"></div>
-                      </div>
-                    }
-
+                >
+                  @if(!isLoading) {
+                  <span>ذخیره تغییرات</span>
+                  } @else{
+                  <div class="loader-box">
+                    <div class="loader-7"></div>
                   </div>
-                  <!-- <div class="text-end"><a (click)="validate(processName.value, processDesc.value)" class="btn btn-primary m-r-15" href="#">افزودن</a></div> -->
+                  }
                 </div>
+                <!-- <div class="text-end"><a (click)="validate(processName.value, processDesc.value)" class="btn btn-primary m-r-15" href="#">افزودن</a></div> -->
               </div>
-
             </div>
           </div>
         </div>
       </div>
+     </div>
     </div>
-  </div>
-  <div class="container-fluid">
-    <div class="page-title">
-      <div class="row">
-        <div class="col-12 col-sm-6">
-          <h3>افزودن زیر فرآیند جدید برای : {{process?.name}}</h3>
+    <div class="row">
+      <div class="col-sm-6">
+        
+        <div class="card">
+          <div class="card-header pb-0">
+                <h5>ثبت زیر فرآیند جدید</h5>
+              </div>
+          <div class="card-body">
+            <div class="form theme-form projectcreate">
+              <div class="row">
+                <label>عنوان</label>
+                <input
+                  [disabled]="!flowchart?.active"
+                  #nodeLabel
+                  class="form-control"
+                  type="text"
+                  placeholder=""
+                />
+              </div>
+              <div class="row">
+                <label>نوع زیر فرآیند </label>
+
+                <select [(ngModel)]="selectedNodeType">
+                  <option *ngFor="let type of nodeTypes" [ngValue]="type">
+                    {{ NodeTypeLabels[type] }}
+                  </option>
+                </select>
+              </div>
+              <div class="row">
+                <label>نوع عملیات </label>
+                <select [(ngModel)]="selectedTaskType"  (ngModelChange)="onTaskTypeChange($event)">
+                  <option *ngFor="let type of taskTypes" [ngValue]="type">
+                    {{ TaskTypeLabels[type] }}
+                  </option>
+                </select>
+               
+              </div>
+       
+              <div class="mb-3">
+                <div class="form-control" class="job-filter mb-3">
+                  <a
+                  (click)="showSelectConfirmerPrompt()"
+                  data-bs-toggle="modal"
+                  data-bs-target="#selectConfirmerModal"
+                  class="btn btn-primary btn-block"
+                  [class.disabled]="!selectConfirmer || !confirmByDepAdmin"
+                  [class.pointer-events-none]="!selectConfirmer || !confirmByDepAdmin"
+                >
+                انتخاب تایید کننده
+               </a>
+               
+                </div>
+               
+              </div>
+              <div class="row">
+                <div
+                class="btn btn-primary btn-block"
+                [class.disabled]="isLoading || !flowchart?.active"
+                [class.pointer-events-none]="isLoading"
+                (click)="
+                  validateNewNode(selectedNodeType, selectedTaskType, nodeLabel.value, true)
+                "
+              >
+                @if(!isLoading) {
+                <span>ثبت زیر فرآیند جدید</span>
+                } @else{
+                <div class="loader-box">
+                  <div class="loader-7"></div>
+                </div>
+                }
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header pb-0">
+                <h5>اتصال زیر فرآیند</h5>
+          </div>
+          <div class="card-body">
+            <div class="form theme-form projectcreate">
+              <div class="row">
+                <label>عنوان</label>
+                <input
+                  [disabled]="!flowchart?.active"
+                  #edgeLabel
+                  class="form-control"
+                  type="text"
+                  placeholder=""
+                />
+              </div>
+              <div class="row">
+                <label>اتصال </label>
+
+                <select id="nodeSelect" [(ngModel)]="startNodeId">
+                  <option *ngFor="let node of flowchartNodes$ | async" [value]="node.id">
+                    {{ node.label }}
+                  </option>
+                </select>
+              </div>
+              <div class="row">
+                <label>به</label>
+
+                <select id="nodeSelect" [(ngModel)]="endNodeId">
+                  <option *ngFor="let node of flowchartNodes$ | async" [value]="node.id">
+                    {{ node.label }}
+                  </option>
+                </select>
+              </div>
+              <div class="row">
+                <div
+                class="btn btn-primary btn-block"
+                [class.disabled]="isLoading || !flowchart?.active"
+                [class.pointer-events-none]="isLoading"
+                (click)="
+                  validateNewEdge(startNodeId, endNodeId, edgeLabel.value, true)
+                "
+              >
+                @if(!isLoading) {
+                <span>ثبت اتصال جدید</span>
+                } @else{
+                <div class="loader-box">
+                  <div class="loader-7"></div>
+                </div>
+                }
+              </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="container-fluid" [class.disabled]="!process?.active">
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="card" >
+
+    
+      <div class="col-sm-6">
+        <div class="card">
           <!-- <div class="card-header pb-0">
                 <h5>ثبت فرآیند جدید</h5>
               </div> -->
           <div class="card-body">
             <div class="form theme-form projectcreate">
-              <div class="row">
-                <div class="col">
-                  <div class="mb-3">
-                    <label>عنوان</label>
-                    <input [disabled]="!process?.active" #processStepName class="form-control" type="text" placeholder="" />
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <div class="mb-3">
-                    <label>توضیحات</label>
-                    <input [disabled]="!process?.active" #processStepDesc class="form-control" type="text" placeholder="" />
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <div class="btn btn-primary btn-block"
-                  [class.disabled]="isLoading || !process?.active"
-                  [class.pointer-events-none]="isLoading"
-                  (click)="validateNewStep(processStepName.value, processStepDesc.value,true)"
-                  >
-                    @if(!isLoading) {
-                      <span >ثبت اطلاعات</span>
-                    } @else{
-                      <div class="loader-box">
-                        <div class="loader-7"></div>
-                      </div>
-                    }
-
-                  </div>
-                  <!-- <div class="text-end"><a (click)="validate(processName.value, processDesc.value)" class="btn btn-primary m-r-15" href="#">افزودن</a></div> -->
-                </div>
-              </div>
+              <div class="mermaid" [innerHTML]="flowchartDef"></div>
 
             </div>
           </div>
@@ -122,51 +221,77 @@
     </div>
   </div>
 
+
   <div class="container-fluid">
     <div class="page-title">
       <div class="row">
         <div class="col-12 col-sm-6">
-          <h3>زیر فرآیند های : {{process?.name}}</h3>
+          <h3>زیر فرآیند های : {{ flowchart?.name }}</h3>
         </div>
       </div>
     </div>
   </div>
-  <div class="container-fluid" [class.disabled]="!process?.active">
+  <div class="container-fluid" [class.disabled]="!flowchart?.active">
     <div class="row">
       <div class="col-sm-6">
         <div class="timeline">
           <div
             class="timeline-item"
-            *ngFor="let processStep of processSteps$ | async; let i = index; trackBy: trackByProcessStepId"
+            *ngFor="
+              let processStep of flowchartNodes$ | async;
+              let i = index;
+              trackBy: trackByNodeId
+            "
           >
             <div class="timeline-card card">
               <div class="card-header pb-0">
                 <div class="media">
                   <div class="media-body">
-                    <h5>عنوان : {{processStep?.name}}</h5>
+                    <h5>عنوان : {{ processStep?.label }}</h5>
                   </div>
-                    @if (process!.active) {
-  <div class="icon-box onhover-dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                      <div class="icon-box-show onhover-show-div">
-                        
-                        <ul>
-                          <li>
-                            
-                           <a disa
-                           data-bs-toggle="modal" data-bs-target="#exampleModalmdo"  (click)="setSelectedStep(processStep)">
-                              ویرایش
-                              </a></li>
-                          <li> <a (click)="showDeleteProcessStepPrompt(processStep)" data-bs-toggle="modal" data-bs-target="#promptModal" >
-                              حذف</a></li>
-                       
-                              
-                        </ul>
-                      
-                      </div>
+                  @if (flowchart!.active) {
+                  <div class="icon-box onhover-dropdown">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="feather feather-more-horizontal"
+                    >
+                      <circle cx="12" cy="12" r="1"></circle>
+                      <circle cx="19" cy="12" r="1"></circle>
+                      <circle cx="5" cy="12" r="1"></circle>
+                    </svg>
+                    <div class="icon-box-show onhover-show-div">
+                      <ul>
+                        <li>
+                          <a
+                            disa
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModalmdo"
+                            (click)="setSelectedNode(processStep)"
+                          >
+                            ویرایش
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            (click)="showDeleteNodePrompt(processStep)"
+                            data-bs-toggle="modal"
+                            data-bs-target="#promptModal"
+                          >
+                            حذف</a
+                          >
+                        </li>
+                      </ul>
                     </div>
-                    }
-                  
-                  
+                  </div>
+                  }
                 </div>
               </div>
               <div class="card-body">
@@ -174,71 +299,141 @@
                   <div class="media">
                     <div class="recent-circle bg-primary"></div>
                     <div class="media-body">
-                      <h6 class="font-roboto">
-                        توضیحات: {{processStep?.description}}
-                      </h6><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock me-2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span class="font-roboto">25 خرداد 1401 | 20 ساعت
-                          پیش</span></span>
+                      <h6 class="font-roboto">توضیحات: {{ processStep?.label }}</h6>
+                      <span
+                        ><svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="feather feather-clock me-2"
+                        >
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <polyline points="12 6 12 12 16 14"></polyline></svg
+                        ><span class="font-roboto">25 خرداد 1401 | 20 ساعت پیش</span></span
+                      >
                     </div>
                   </div>
-            
                 </div>
               </div>
-            <div class="timeline-dot"></div>
+              <div class="timeline-dot"></div>
+            </div>
           </div>
         </div>
-        
       </div>
     </div>
-  </div>
 
-  <div class="modal fade" id="exampleModalmdo" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">ویرایش زیرفرآیند</h5>
-          <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close" data-bs-original-title="" title=""></button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="mb-3">
-              <label class="col-form-label" for="recipient-name">عنوان : </label>
-              <input #newProcessTitle class="form-control" id="recipient-name" type="text" value="{{selectedProcessStep?.name}}" 
-              data-bs-original-title="" title="">
-            </div>
-            <div class="mb-3">
-              <label class="col-form-label" for="message-text">توضیحات : </label>
-              <textarea #newProcessDesc class="form-control" value="{{selectedProcessStep?.description}}"></textarea>
-            </div>
-            <span
-            id="terms-error"
-            class="invalid-feedback"
-            style="display: block"
-            [innerHTML]="errorMessage"
-          ></span>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button #btnCloseModal class="btn btn-secondary"  type="button" data-bs-dismiss="modal" data-bs-original-title="" title="">بستن</button>
-          <div class="btn btn-primary btn-block" 
-          [class.disabled]="isLoading"
-          [class.pointer-events-none]="isLoading"
-          (click)="validateNewStep(newProcessTitle.value, newProcessDesc.value,false)" >
-            @if(!isLoading) {
-              <span >ذخیره اطلاعات</span>
-            } @else{
+    <div
+      class="modal fade"
+      id="exampleModalmdo"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      style="display: none"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">ویرایش زیرفرآیند</h5>
+            <button
+              class="btn-close"
+              type="button"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+              data-bs-original-title=""
+              title=""
+            ></button>
+          </div>
+          <div class="modal-body">
+            
+              <div class="mb-3">
+                <label class="col-form-label" for="recipient-name">عنوان : </label>
+                <input
+                  #nodeLabel
+                  class="form-control"
+                  id="recipient-name"
+                  type="text"
+                  value="{{ selectedNode?.label }}"
+                  data-bs-original-title=""
+                  title=""
+                />
+              </div>
+              <div class="mb-3">
+                <label>نوع زیر فرآیند </label>
+
+                <select class="form-control" [(ngModel)]="selectedNodeType">
+                  <option *ngFor="let type of nodeTypes" [ngValue]="type">
+                    {{ NodeTypeLabels[type] }}
+                  </option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label>نوع عملیات </label>
+                <select class="form-control" [(ngModel)]="selectedTaskType"  (ngModelChange)="onTaskTypeChange($event)">
+                  <option *ngFor="let type of taskTypes" [ngValue]="type">
+                    {{ TaskTypeLabels[type] }}
+                  </option>
+                </select>
+               
+              </div>
+              <div class="mb-3">
+                <div class="form-control" class="job-filter mb-3">
+                  <a
+                  (click)="showSelectConfirmerPrompt()"
+                  data-bs-toggle="modal"
+                  data-bs-target="#selectConfirmerModal"
+                  class="btn btn-primary btn-block"
+                  [class.disabled]="!selectConfirmer"
+                  [class.pointer-events-none]="!selectConfirmer"
+                >
+                انتخاب تایید کننده
+               </a>
+               
+                </div>
+               
+              </div>
+              <span
+                id="terms-error"
+                class="invalid-feedback"
+                style="display: block"
+                [innerHTML]="errorMessage"
+              ></span>
+          </div>
+          <div class="modal-footer">
+            <button
+              #btnCloseModal
+              class="btn btn-secondary"
+              type="button"
+              data-bs-dismiss="modal"
+              data-bs-original-title=""
+              title=""
+            >
+              بستن
+            </button>
+            <div
+              class="btn btn-primary btn-block"
+              [class.disabled]="isLoading"
+              [class.pointer-events-none]="isLoading"
+              (click)="validateNewNode(selectedNodeType, selectedTaskType, nodeLabel.value, false)"
+            >
+              @if(!isLoading) {
+              <span>ذخیره تغییرات</span>
+              } @else{
               <div class="loader-box">
                 <div class="loader-7"></div>
               </div>
-            }
-            
+              }
+            </div>
+
+            <!-- <button class="btn btn-primary" type="button" data-bs-original-title="" title="">ثبت اطلاعات</button> -->
           </div>
-        
-          <!-- <button class="btn btn-primary" type="button" data-bs-original-title="" title="">ثبت اطلاعات</button> -->
         </div>
-     
       </div>
     </div>
   </div>
 </div>
-
-

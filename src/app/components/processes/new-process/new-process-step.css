@@ -48,3 +48,43 @@
   transform: translateY(-50%) scale(1.2);
   box-shadow: 0 0 18px rgba(0, 123, 255, 0.9);
 }
+
+
+/* .mermaid .edgeLabel {
+  font-size: 12px;
+  fill: #333;
+}
+.mermaid {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+} */
+
+.mermaid {
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.mermaid .node rect {
+  fill: #f0f8ff !important;
+  stroke: #0077cc !important;
+}
+
+.mermaid .edgeLabel {
+  font-size: 12px;
+  fill: #333;
+}
+
+label {
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+}
+
+.btn {
+  margin-top: 10px;
+
+}
+.job-filter .faq-form .search-icon{
+  margin-top: 5px;
+}

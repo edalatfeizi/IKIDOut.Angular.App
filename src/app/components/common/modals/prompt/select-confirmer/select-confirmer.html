@@ -1,0 +1,427 @@
+<div
+  class="modal fade"
+  id="selectConfirmerModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  style="display: none"
+>
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{ title }}</h5>
+        <button
+          class="btn-close"
+          type="button"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          data-bs-original-title=""
+          title=""
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div #progressBar class="card gone">
+          <p-progressBar mode="indeterminate" class="p-element"> </p-progressBar>
+        </div>
+        <div class="container-fluid user-card">
+          <div class="left-side-header col ps-0 d-none d-md-block">
+            <div class="input-group">
+              <span id="basic-addon1" class="input-group-text"
+                ><svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g>
+                    <g>
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z"
+                        stroke="#130F26"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></path>
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z"
+                        stroke="#130F26"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></path>
+                    </g>
+                  </g></svg></span>
+              <input
+                type="text"
+                placeholder="جستجو بر اساس نام، نام خانوادگی، شماره پرسنلی و پست سازمانی"
+                aria-label="search"
+                aria-describedby="basic-addon1"
+                class="form-control"
+              />
+            </div>
+          </div>
+          <div class="row" style="margin-top: 10px">
+            <div class="col-md-6 col-lg-6 col-xl-4 box-col-4">
+              <div class="card custom-card" (click)="confirm()">
+                <div class="card-header">
+                  <img
+                    class="img-fluid"
+                    src="../../../../../../assets/images/user-card/1.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="card-profile">
+                  <img
+                    class="rounded-circle"
+                    src="../../../../../../assets/images/avtar/3.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="text-center profile-details">
+                  <a href="user-profile.html">
+                    <h4>نسترن افشار</h4>
+                  </a>
+                  <h6>مدیر</h6>
+                </div>
+                <ul class="card-social">
+                  <li>
+                    <a href="https://www.facebook.com/"><i class="fa fa-facebook"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://accounts.google.com/"><i class="fa fa-google-plus"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://twitter.com/"><i class="fa fa-twitter"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://www.instagram.com/"><i class="fa fa-instagram"></i></a>
+                  </li>
+                  <li>
+                    <a href="javascript:void(0)"><i class="fa fa-rss"></i></a>
+                  </li>
+                </ul>
+                <div class="card-footer row">
+                  <div class="col-4 col-sm-4">
+                    <h6>دنبال کننده</h6>
+                    <h3 class="counter">9564</h3>
+                  </div>
+                  <div class="col-4 col-sm-4">
+                    <h6>دنبال شونده</h6>
+                    <h3><span class="counter">49</span>K</h3>
+                  </div>
+                  <div class="col-4 col-sm-4">
+                    <h6>تعداد پست</h6>
+                    <h3><span class="counter">96</span>M</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-6 col-xl-4 box-col-4">
+              <div class="card custom-card">
+                <div class="card-header">
+                  <img
+                    class="img-fluid"
+                    src="../../../../../../assets/images/user-card/2.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="card-profile">
+                  <img
+                    class="rounded-circle"
+                    src="../../../../../../assets/images/avtar/16.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="text-center profile-details">
+                  <a href="user-profile.html">
+                    <h4>امیر صبوری</h4>
+                  </a>
+                  <h6>طراح</h6>
+                </div>
+                <ul class="card-social">
+                  <li>
+                    <a href="https://www.facebook.com/"><i class="fa fa-facebook"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://accounts.google.com/"><i class="fa fa-google-plus"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://twitter.com/"><i class="fa fa-twitter"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://www.instagram.com/"><i class="fa fa-instagram"></i></a>
+                  </li>
+                  <li>
+                    <a href="javascript:void(0)"><i class="fa fa-rss"></i></a>
+                  </li>
+                </ul>
+                <div class="card-footer row">
+                  <div class="col-4 col-sm-4">
+                    <h6>دنبال کننده</h6>
+                    <h3 class="counter">2578</h3>
+                  </div>
+                  <div class="col-4 col-sm-4">
+                    <h6>دنبال شونده</h6>
+                    <h3><span class="counter">26</span>K</h3>
+                  </div>
+                  <div class="col-4 col-sm-4">
+                    <h6>تعداد پست</h6>
+                    <h3><span class="counter">96</span>M</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-6 col-xl-4 box-col-4">
+              <div class="card custom-card">
+                <div class="card-header">
+                  <img
+                    class="img-fluid"
+                    src="../../../../../../assets/images/user-card/3.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="card-profile">
+                  <img
+                    class="rounded-circle"
+                    src="../../../../../../assets/images/avtar/11.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="text-center profile-details">
+                  <a href="user-profile.html">
+                    <h4>یلدا سبحانی</h4>
+                  </a>
+                  <h6>توسعه دهنده</h6>
+                </div>
+                <ul class="card-social">
+                  <li>
+                    <a href="https://www.facebook.com/"><i class="fa fa-facebook"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://accounts.google.com/"><i class="fa fa-google-plus"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://twitter.com/"><i class="fa fa-twitter"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://www.instagram.com/"><i class="fa fa-instagram"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://dashboard.rss.com/"><i class="fa fa-rss"></i></a>
+                  </li>
+                </ul>
+                <div class="card-footer row">
+                  <div class="col-4 col-sm-4">
+                    <h6>دنبال کننده</h6>
+                    <h3 class="counter">6545</h3>
+                  </div>
+                  <div class="col-4 col-sm-4">
+                    <h6>دنبال شونده</h6>
+                    <h3><span class="counter">91</span>K</h3>
+                  </div>
+                  <div class="col-4 col-sm-4">
+                    <h6>تعداد پست</h6>
+                    <h3><span class="counter">21</span>M</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-6 col-xl-4 box-col-4">
+              <div class="card custom-card">
+                <div class="card-header">
+                  <img
+                    class="img-fluid"
+                    src="../../../../../../assets/images/user-card/7.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="card-profile">
+                  <img
+                    class="rounded-circle"
+                    src="../../../../../../assets/images/avtar/16.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="text-center profile-details">
+                  <a href="user-profile.html">
+                    <h4>امیر صبوری</h4>
+                  </a>
+                  <h6>طراح</h6>
+                </div>
+                <ul class="card-social">
+                  <li>
+                    <a href="https://www.facebook.com/"><i class="fa fa-facebook"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://accounts.google.com/"><i class="fa fa-google-plus"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://twitter.com/"><i class="fa fa-twitter"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://www.instagram.com/"><i class="fa fa-instagram"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://dashboard.rss.com/"><i class="fa fa-rss"></i></a>
+                  </li>
+                </ul>
+                <div class="card-footer row">
+                  <div class="col-4 col-sm-4">
+                    <h6>دنبال کننده</h6>
+                    <h3 class="counter">2578</h3>
+                  </div>
+                  <div class="col-4 col-sm-4">
+                    <h6>دنبال شونده</h6>
+                    <h3><span class="counter">26</span>K</h3>
+                  </div>
+                  <div class="col-4 col-sm-4">
+                    <h6>تعداد پست</h6>
+                    <h3><span class="counter">96</span>M</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-6 col-xl-4 box-col-4">
+              <div class="card custom-card">
+                <div class="card-header">
+                  <img
+                    class="img-fluid"
+                    src="../../../../../../assets/images/user-card/5.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="card-profile">
+                  <img
+                    class="rounded-circle"
+                    src="../../../../../../assets/images/avtar/11.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="text-center profile-details">
+                  <a href="user-profile.html">
+                    <h4>یلدا سبحانی</h4>
+                  </a>
+                  <h6>توسعه دهنده</h6>
+                </div>
+                <ul class="card-social">
+                  <li>
+                    <a href="https://www.facebook.com/"><i class="fa fa-facebook"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://accounts.google.com/"><i class="fa fa-google-plus"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://twitter.com/"><i class="fa fa-twitter"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://www.instagram.com/"><i class="fa fa-instagram"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://dashboard.rss.com/"><i class="fa fa-rss"></i></a>
+                  </li>
+                </ul>
+                <div class="card-footer row">
+                  <div class="col-4 col-sm-4">
+                    <h6>دنبال کننده</h6>
+                    <h3 class="counter">6545</h3>
+                  </div>
+                  <div class="col-4 col-sm-4">
+                    <h6>دنبال شونده</h6>
+                    <h3><span class="counter">91</span>K</h3>
+                  </div>
+                  <div class="col-4 col-sm-4">
+                    <h6>تعداد پست</h6>
+                    <h3><span class="counter">21</span>M</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-6 col-xl-4 box-col-4">
+              <div class="card custom-card">
+                <div class="card-header">
+                  <img
+                    class="img-fluid"
+                    src="../../../../../../assets/images/user-card/6.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="card-profile">
+                  <img
+                    class="rounded-circle"
+                    src="../../../../../../assets/images/avtar/3.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="text-center profile-details">
+                  <a href="user-profile.html">
+                    <h4>ساناز حسینی</h4>
+                  </a>
+                  <h6>مدیر</h6>
+                </div>
+                <ul class="card-social">
+                  <li>
+                    <a href="https://www.facebook.com/"><i class="fa fa-facebook"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://accounts.google.com/"><i class="fa fa-google-plus"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://twitter.com/"><i class="fa fa-twitter"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://www.instagram.com/"><i class="fa fa-instagram"></i></a>
+                  </li>
+                  <li>
+                    <a href="https://dashboard.rss.com/"><i class="fa fa-rss"></i></a>
+                  </li>
+                </ul>
+                <div class="card-footer row">
+                  <div class="col-4 col-sm-4">
+                    <h6>دنبال کننده</h6>
+                    <h3 class="counter">9564</h3>
+                  </div>
+                  <div class="col-4 col-sm-4">
+                    <h6>دنبال شونده</h6>
+                    <h3><span class="counter">49</span>K</h3>
+                  </div>
+                  <div class="col-4 col-sm-4">
+                    <h6>تعداد پست</h6>
+                    <h3><span class="counter">96</span>M</h3>
+                  </div>
+                  <!-- Container-fluid Ends-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          id="btnCloseSelectConfirmerPromptModal"
+          class="btn btn-secondary"
+          type="button"
+          data-bs-dismiss="modal"
+          data-bs-original-title=""
+          title=""
+        >
+          بستن
+        </button>
+        <button
+          #btnConfirm
+          (click)="confirm()"
+          class="btn btn-primary"
+          type="button"
+          data-bs-original-title=""
+          title=""
+        >
+          تایید
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

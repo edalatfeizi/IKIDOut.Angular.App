@@ -48,3 +48,8 @@ export const API_GET_PRODUCT_SEND_OUT_FLOWS = BaseUrl + API_V1 + 'ProductSendOut
 export const API_GET_APP_PROCESSES = BaseUrl + API_V1 + 'app/processes';
 export const API_PROCESSES = BaseUrl + API_V1 + 'processes';
 /** APP Processes API EndPoints End*/
+
+/** APP Flowcharts API EndPoints Start*/
+export const API_GET_APP_FLOWCHARTS = BaseUrl + API_V1 + 'app/flowcharts';
+export const API_FLOWCHARTS = BaseUrl + API_V1 + 'flowcharts';
+/** APP Flowcharts API EndPoints End*/

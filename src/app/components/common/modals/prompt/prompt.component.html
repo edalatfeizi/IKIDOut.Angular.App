@@ -1,52 +1,3 @@
-<!-- <div
-  class="modal fade"
-  id="modal-prompt"
-  style="display: none;"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">{{ title }}</h4>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-
-      <div class="modal-body">
-        <form class="form-horizontal">
-          <div class="form-group row">
-            <div [innerHTML]="htmlContent"></div>
- 
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer justify-content-between">
-        <button
-          type="button"
-          class="btn btn-default"
-          data-dismiss="modal"
-          id="btnClosePromptModal"
-        >
-          بستن
-        </button>
-        <button
-          #btnSave
-          type="button"
-          class="btn btn-warning"
-          (click)="confirm()"
-        >
-          تایید
-        </button>
-      </div>
-    </div>
-  </div>
-</div> -->
 
 <div class="modal fade" id="promptModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
   <div class="modal-dialog" role="document">
@@ -57,8 +8,8 @@
       </div>
       <div class="modal-body" [innerHTML]="htmlContent"></div>
       <div class="modal-footer">
-        <button id="btnClosePromptModal" class="btn btn-primary" type="button" data-bs-dismiss="modal" data-bs-original-title="" title="">بستن</button>
-        <button #btnConfirm (click)="confirm()" class="btn btn-secondary" type="button" data-bs-original-title="" title="">تایید</button>
+        <button id="btnClosePromptModal" class="btn  btn-secondary" type="button" data-bs-dismiss="modal" data-bs-original-title="" title="">بستن</button>
+        <button #btnConfirm (click)="confirm()" class="btn btn-primary" type="button" data-bs-original-title="" title="">تایید</button>
       </div>
     </div>
   </div>

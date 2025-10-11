@@ -25,12 +25,14 @@ import {
   DELETE_PROCESS_STEP_COMMAND,
   LOGOUT_COMMAND,
   RESTORE_PROCESS_COMMAND,
+  SELECT_CONFIRMER_PERSON_COMMAND,
 } from './constants/prompt_commands';
 import { ModalState } from './states/selectors/states/modal-states.state';
 import { selectModalState } from './states/selectors/modal.selectors';
+import { SelectConfirmer } from "./components/common/modals/prompt/select-confirmer/select-confirmer";
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, Sidebar, Footer, AsyncPipe, PromptComponent],
+  imports: [RouterOutlet, Header, Sidebar, Footer, AsyncPipe, PromptComponent, SelectConfirmer],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -54,7 +56,8 @@ export class App implements OnInit, OnDestroy {
   toastMessage$: Observable<string | null> = this.store.select(selectToastMessage);
   toastType$: Observable<ToastTypes> = this.store.select(selectToastType);
   isVisible$: Observable<boolean> = this.store.select(selectIsToastVisible);
-
+  deleteNodePrompModal = DELETE_PROCESS_STEP_COMMAND
+  selectConfirmerPrompModal = SELECT_CONFIRMER_PERSON_COMMAND
   constructor() {
     // this.store
     //   .select(selectShowToast)
@@ -73,6 +76,7 @@ export class App implements OnInit, OnDestroy {
         case DELETE_PROCESS_STEP_COMMAND:
         case DELETE_PROCESS_COMMAND:
         case RESTORE_PROCESS_COMMAND:
+        case SELECT_CONFIRMER_PERSON_COMMAND:
           this.promptData = modalState.data as PromptData;
           break;
 

@@ -28,7 +28,8 @@
                     class="nav-link active"
                     id="top-home-tab"
                     data-bs-toggle="tab"
-                    href="#top-home"
+                    href=""
+                    (click)="filterProcesses(undefined)"
                     role="tab"
                     aria-controls="top-home"
                     aria-selected="true"
@@ -55,10 +56,11 @@
                     class="nav-link"
                     id="contact-top-tab"
                     data-bs-toggle="tab"
-                    href="#top-contact"
                     role="tab"
                     aria-controls="top-contact"
                     aria-selected="false"
+                    href=""
+                    (click)="filterProcesses(true)"
                     ><svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -81,7 +83,8 @@
                     class="nav-link"
                     id="profile-top-tab"
                     data-bs-toggle="tab"
-                    href="#top-profile"
+                    (click)="filterProcesses(false)"
+                    href=""
                     role="tab"
                     aria-controls="top-profile"
                     aria-selected="false"
@@ -188,12 +191,12 @@
                 aria-labelledby="top-home-tab"
               >
                 <div class="row">
-                  @if ((processes$ | async)!.length > 0) {
+                  @if ((showingFlowcharts$ | async)!.length > 0) {
                   <ng-container
                     *ngFor="
-                      let process of processes$ | async;
+                      let flowchart of showingFlowcharts$ | async;
                       let i = index;
-                      trackBy: trackByProcessId
+                      trackBy: trackByFlowchartId
                     "
                   >
                   <div class="col-xl-6 xl-100 box-col-12">
@@ -201,15 +204,15 @@
                       <div class="card-header card-no-border">
                         <div class="media media-dashboard">
                           <div class="media-body">
-                            <h6 class="f-w-600">{{process.name}}</h6>
+                            <h6 class="f-w-600">{{flowchart.name}}</h6>
                           </div>
                           <div class="icon-box onhover-dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
                             <div class="icon-box-show onhover-show-div">
                               <ul>
-                                @if(process!.active){
-                                  <li> <a (click)="showDeleteProcessPrompt(process)" data-bs-toggle="modal" data-bs-target="#promptModal">حذف فرآیند</a></li>
+                                @if(flowchart!.active){
+                                  <li> <a (click)="showDeleteProcessPrompt(flowchart)" data-bs-toggle="modal" data-bs-target="#promptModal">حذف فرآیند</a></li>
                                 }@else {
-                                  <li> <a (click)="showActivateProcessPrompt(process)" data-bs-toggle="modal" data-bs-target="#promptModal">بازیابی فرآیند</a></li>
+                                  <li> <a (click)="showActivateProcessPrompt(flowchart)" data-bs-toggle="modal" data-bs-target="#promptModal">بازیابی فرآیند</a></li>
 
                                 }
                                 
@@ -218,7 +221,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="job-search"  (click)="showProcess(process)">
+                      <div class="job-search"  (click)="showFlowchart(flowchart)">
               
                         <div class="card-body">
                           <div class="media">
@@ -227,16 +230,16 @@
                               <h6 class="f-w-600"><a></a>
                                 <!-- <span class="badge badge-primary pull-right">جدید</span> -->
                                 <span class="badge pull-right digits"
-                                [class.badge-success]="process.active"
-                                [class.badge-danger]="!process.active">
-                                @if(process.active){
+                                [class.badge-success]="flowchart.active"
+                                [class.badge-danger]="!flowchart.active">
+                                @if(flowchart.active){
                                   فعال
                                 }@else{
                                   غیر فعال
                                 }
                               </span>
                               </h6>
-                              <p>تعداد زیر فرآیند: {{process.steps.length}}</p>
+                              <p>تعداد زیر فرآیند: {{flowchart.nodes.length}}</p>
 
                               <!-- <ul class="rating">
                                 <li><i class="fa fa-star font-warning"></i></li>
@@ -249,7 +252,7 @@
                         
                           </div>
                     
-                          <p>{{process.description}}</p>
+                          <p>{{flowchart.description}}</p>
                         </div>
                       </div>
                     </div>
@@ -260,121 +263,7 @@
                   }
                 </div>
               </div>
-              <div
-                class="tab-pane fade"
-                id="top-profile"
-                role="tabpanel"
-                aria-labelledby="profile-top-tab"
-              >
-              <div class="row">
-                @if ((processes$ | async)!.length > 0) {
-                <ng-container
-                  *ngFor="
-                    let process of processes$ | async;
-                    let i = index;
-                    trackBy: trackByProcessId
-                  "
-                >
-                @if(!process.active){
-                  <div class="col-xl-6 xl-100 box-col-12">
-                    <div class="card process">
-                      <div class="job-search" (click)="showProcess(process)">
-                        <div class="card-body">
-                          <div class="media">
-                            <img class="process-icon" src="../../../../assets/images/svg/process.svg" alt="process icon" width="24" height="24" />
-                            <div class="media-body">
-                              <h6 class="f-w-600"><a href="job-details.html">{{process.name}}</a>
-                                <!-- <span class="badge badge-primary pull-right">جدید</span> -->
-                                <span class="badge pull-right digits"
-                                [class.badge-success]="process.active"
-                                [class.badge-danger]="!process.active">
-                                @if(process.active){
-                                  فعال
-                                }@else{
-                                  غیر فعال
-                                }
-                              </span>
-                              </h6>
-                              <p>تعداد زیر فرآیند: {{process.steps.length}}</p>
-                              <!-- <ul class="rating">
-                                <li><i class="fa fa-star font-warning"></i></li>
-                                <li><i class="fa fa-star font-warning"></i></li>
-                                <li><i class="fa fa-star font-warning"></i></li>
-                                <li><i class="fa fa-star font-warning"></i></li>
-                                <li><i class="fa fa-star font-warning"></i></li>
-                              </ul> -->
-                            </div>
-                          </div>
-                          <p>{{process.description}}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                }
-                  
-                </ng-container>
-
-                }
-              </div>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="top-contact"
-                role="tabpanel"
-                aria-labelledby="contact-top-tab"
-              >
-              <div class="row">
-                @if ((processes$ | async)!.length > 0) {
-                <ng-container
-                  *ngFor="
-                    let process of processes$ | async;
-                    let i = index;
-                    trackBy: trackByProcessId
-                  "
-                >
-                @if(process.active){
-                  <div class="col-xl-6 xl-100 box-col-12">
-                    <div class="card">
-                      <div class="job-search process" (click)="showProcess(process)">
-                        <div class="card-body">
-                          <div class="media">
-                            <img class="process-icon" src="../../../../assets/images/svg/process.svg" alt="process icon" width="24" height="24" />
-                            <div class="media-body">
-                              <h6 class="f-w-600"><a href="job-details.html">{{process.name}}</a>
-                                <!-- <span class="badge badge-primary pull-right">جدید</span> -->
-                                <span class="badge pull-right digits"
-                                [class.badge-success]="process.active"
-                                [class.badge-danger]="!process.active">
-                                @if(process.active){
-                                  فعال
-                                }@else{
-                                  غیر فعال
-                                }
-                              </span>
-                              </h6>
-                              <p>تعداد زیر فرآیند: {{process.steps.length}}</p>
-                              <!-- <ul class="rating">
-                                <li><i class="fa fa-star font-warning"></i></li>
-                                <li><i class="fa fa-star font-warning"></i></li>
-                                <li><i class="fa fa-star font-warning"></i></li>
-                                <li><i class="fa fa-star font-warning"></i></li>
-                                <li><i class="fa fa-star font-warning"></i></li>
-                              </ul> -->
-                            </div>
-                          </div>
-                          <p>{{process.description}}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                }
-                
-                 
-                </ng-container>
-
-                }
-              </div>
-              </div>
+            
             </div>
           </div>
         </div>

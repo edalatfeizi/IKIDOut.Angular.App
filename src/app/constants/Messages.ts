@@ -102,3 +102,5 @@ export const DELETE_PROCESS = 'حذف فرآیند';
 export const RESTORE_PROCESS = 'بازیابی فرآیند';
 export const PROCESS = 'فرآیند';
 export const MSG_RESTORE_PROCESS_SUCCESS = 'بازیابی فرآیند با موفقیت انجام شد.';
+
+export const SELECT_CONFIRMER = 'انتخاب تایید کننده';

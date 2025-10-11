@@ -1,10 +1,11 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { AppProcessesService } from '../../../services/processes.service';
 import { Store } from '@ngrx/store';
 import { ToastTypes } from '../../../enums/toast_types';
 import { showToast } from '../../../states/actions/toast.actions';
 import {
   DELETE_PROCESS_STEP,
+  ERR_CANNOT_CONNECT_SERVER,
   ERR_ENTER_NEW_PROCESS_DESC,
   ERR_ENTER_NEW_PROCESS_NAME,
   ERR_ENTER_NEW_PROCESS_STEP_DESC,
@@ -19,10 +20,11 @@ import {
   MSG_UPDATE_PROCESS_STEP_SUCCESS,
   MSG_UPDATE_PROCESS_SUCCESS,
   PROCESS_STEP,
+  SELECT_CONFIRMER,
 } from '../../../constants/Messages';
 import { AppProcessResDto } from '../../../models/api/response/process/app-process-res-dto';
 import { NewProcessStepDto } from '../../../models/api/request/process/new-process-step-dto';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, timer } from 'rxjs';
 import { ProcessStepResDto } from '../../../models/api/response/process/process-step-res-dto';
 import { CommonModule } from '@angular/common';
 import { AddProcessDto } from '../../../models/api/request/process/add-process-dto';
@@ -33,11 +35,24 @@ import { PromptData } from '../../../models/prompt_data';
 import {
   CONFIRM_DELETE_PROCESS_STEP_COMMAND,
   CONFIRM_LOGOUT_COMMAND,
+  CONFIRM_SELECT_CONFIRMER_COMMAND,
   DELETE_PROCESS_STEP_COMMAND,
   LOGOUT_COMMAND,
+  SELECT_CONFIRMER_PERSON_COMMAND,
 } from '../../../constants/prompt_commands';
-import { modalConfirmAction, setShowModalAction } from '../../../states/actions/modal.actions';
+import { modalConfirmAction, modalConfirmWithDataAction, setShowModalAction } from '../../../states/actions/modal.actions';
 import { Actions, ofType } from '@ngrx/effects';
+import { FlowchartResDto } from '../../../models/api/response/flowchart/flowchart_res_dto';
+import { FlowchartNodeResDto } from '../../../models/api/response/flowchart/flowchart_node_res_dto';
+import { FlowChartService } from '../../../services/flowchart.service';
+import { UpdateFlowchartNodeDto } from '../../../models/api/request/flowchart/update_flowchart_node_dto';
+import { NodeType, NodeTypeLabels } from '../../../enums/node_type';
+import { AddFlowchartNodeDto } from '../../../models/api/request/flowchart/add_flowchart_node_dto';
+import { UpdateFlowchartDto } from '../../../models/api/request/flowchart/update_flowchart_dto';
+import mermaid from 'mermaid';
+import { AddFlowchartEdgeDto } from '../../../models/api/request/flowchart/add_flowchart_edge_dto';
+import { TaskType, TaskTypeLabels } from '../../../enums/task_type';
+import { ConfirmerUser } from '../../../models/confirmer_user';
 
 @Component({
   selector: 'app-new-process',
@@ -45,17 +60,39 @@ import { Actions, ofType } from '@ngrx/effects';
   templateUrl: './new-process-step.html',
   styleUrl: './new-process-step.css',
 })
-export class NewProcessStep implements OnInit {
+export class NewProcessStep implements OnInit, AfterViewInit {
+  // @Input() flowchartDef: string = ''
+
   isLoading = false;
   // isNewProcess = false
-  process: AppProcessResDto | null = null;
-  processSteps$ = new BehaviorSubject<ProcessStepResDto[]>([]);
-  selectedProcessStep: ProcessStepResDto | null = null;
+  flowchart: FlowchartResDto | null = null;
+  flowchartNodes$ = new BehaviorSubject<FlowchartNodeResDto[]>([]);
+  selectedNode: FlowchartNodeResDto | null = null;
   errorMessage = '';
   @ViewChild('btnCloseModal') btnCloseModal!: ElementRef<HTMLButtonElement>;
+  NodeType = NodeType;
+  NodeTypeLabels = NodeTypeLabels;
 
+  nodeTypes = Object.values(NodeType).filter((v) => typeof v === 'number') as NodeType[];
+
+  selectedNodeType: NodeType = NodeType.Start;
+
+  TaskType = TaskType;
+  TaskTypeLabels = TaskTypeLabels;
+
+  taskTypes = Object.values(TaskType).filter((v) => typeof v === 'number') as TaskType[];
+
+  selectedTaskType: TaskType = TaskType.SelectProduct;
+  flowchartDef = '';
+
+  startNodeId: number = 0;
+  endNodeId: number = 0;
+  selectConfirmer = false;
+  confirmByDepAdmin = false;
+
+  confirmerUser: ConfirmerUser = { userId: '', post: '', personCode: '' };
   constructor(
-    private processService: AppProcessesService,
+    private flowcharService: FlowChartService,
     private store: Store,
     private actions$: Actions
   ) {
@@ -64,58 +101,136 @@ export class NewProcessStep implements OnInit {
         case CONFIRM_DELETE_PROCESS_STEP_COMMAND:
           this.deleteProcessStep();
           break;
+
+        case CONFIRM_SELECT_CONFIRMER_COMMAND:
+          this.showMessage('kljdksa', ToastTypes.INFO);
+          break;
+      }
+    });
+    this.actions$.pipe(ofType(modalConfirmWithDataAction)).subscribe((action) => {
+      switch (action.confirmCommand) {
+    
+        case CONFIRM_SELECT_CONFIRMER_COMMAND:
+          this.showMessage('kljdksa', ToastTypes.INFO);
+          break;
       }
     });
   }
   ngOnInit(): void {
-    this.process = history.state.process;
-    if (this.process!.steps.length > 0) this.setProccessStepsData(this.process?.steps!);
+    this.flowchart = history.state.flowchart;
+
+    this.flowchartDef = this.flowchart!.flowcharDef;
+
+    // if (this.flowchart!.nodes.length > 0) this.setNodesData(this.flowchart?.nodes!);
+
+    this.getFlowchart(this.flowchart!.id);
+    //     this.flowchartDef = `
+    //    flowchart TD
+
+    // 14(start 2) -->
+    // |select pp2|13(select product)
+
+    // 14(start 2) -->
+    // |TEST|16(test)
+
+    //       `;
+    // this.getFlowchartMermaid(this.flowchart!.id)
     // else
     // this.isNewProcess = true
   }
-  validateNewStep(name: string, description: string, isNewStep: boolean) {
-    if (name === '') {
-      this.showMessage(ERR_ENTER_NEW_PROCESS_STEP_NAME, ToastTypes.DANGER);
-    } else if (description === '') {
+  ngAfterViewInit(): void {
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  }
+  validateNewNode(nodeType: NodeType, taskType: TaskType, label: string, isNewStep: boolean) {
+    // if (type === '') {
+    //   this.showMessage(ERR_ENTER_NEW_PROCESS_STEP_NAME, ToastTypes.DANGER);
+    // } else
+    if (label === '') {
       this.showMessage(ERR_ENTER_NEW_PROCESS_STEP_DESC, ToastTypes.DANGER);
     } else {
       if (isNewStep) {
-        var newProcessStep: NewProcessStepDto = {
-          Name: name,
-          Description: description,
-          RoleRequired: '',
+        var node: AddFlowchartNodeDto = {
+          FlowchartId: this.flowchart!.id,
+          Label: label,
+          Expression: '',
+          BPMSNodeType: nodeType,
+          TaskType: taskType,
         };
-        this.addProcessStep(newProcessStep);
+        this.addNode(node);
       } else {
-        var updatedStep: UpdateProcessStepDto = {
-          Name: name,
-          Description: description,
-          RoleRequired: '',
-          ProcessStepTypeId: 0,
-          Order: 0,
+        var updatedNode: UpdateFlowchartNodeDto = {
+          Label: label,
+          Expression: '',
+          NodeType: nodeType,
+          TaskType: taskType,
         };
-        this.updateProcessStep(this.process!.id, this.selectedProcessStep!.id, updatedStep);
+        this.updateNode(this.selectedNode!.id, updatedNode);
       }
     }
   }
-
+  validateNewEdge(sourceNodeId: number, targetNodeId: number, label: string, isNewEdge: boolean) {
+    if (label === '') {
+      this.showMessage(ERR_ENTER_NEW_PROCESS_STEP_DESC, ToastTypes.DANGER);
+    } else {
+      if (isNewEdge) {
+        var edge: AddFlowchartEdgeDto = {
+          FlowchartId: this.flowchart!.id,
+          Label: label,
+          SourceNodeId: sourceNodeId,
+          TargetNodeId: targetNodeId,
+        };
+        this.addEdge(edge);
+      }
+      // else {
+      //   var updatedNode: UpdateFlowchartNodeDto = {
+      //     Label: label,
+      //     Expression: '',
+      //     NodeType: nodeType,
+      //     TaskType : taskType
+      //   };
+      //   this.updateNode(this.selectedNode!.id, updatedNode);
+      // }
+    }
+  }
   showMessage(message: string, toastType: ToastTypes) {
     this.store.dispatch(showToast({ toastModel: { toastType: toastType, message: message } }));
   }
 
-  addProcessStep(newProcessStep: NewProcessStepDto) {
+  addNode(node: AddFlowchartNodeDto) {
     this.isLoading = true;
-    this.processService.addProcessStep(this.process!.id, newProcessStep).subscribe({
+    this.flowcharService.addNode(node).subscribe({
       next: (data) => {
         if (data.succeed) {
-          this.setProccessStepsData([data.data]);
+          this.setNodesData([data.data]);
 
           this.showMessage(MSG_ADD_NEW_PROCESS_STEP_SUCCESS, ToastTypes.SUCCESS);
           // this.router.navigate(['processes/new'], {
           //   state: { newProcess: data.data },
           //   replaceUrl: true,
           // });
-          this.process?.steps;
+          this.flowchart?.nodes;
+        } else {
+          // this.errorMessage = data.message;
+          this.showMessage(data.message, ToastTypes.DANGER);
+
+          // this.eventService.showServerError(data)
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.isLoading = false;
+        //this.errorMessage = ERR_INTERNAL_SERVER;
+
+        this.showMessage(ERR_INTERNAL_SERVER, ToastTypes.DANGER);
+      },
+    });
+  }
+  addEdge(edge: AddFlowchartEdgeDto) {
+    this.isLoading = true;
+    this.flowcharService.addEdge(edge).subscribe({
+      next: (data) => {
+        if (data.succeed) {
+          this.getFlowchartMarmaid(this.flowchart!.id);
         } else {
           // this.errorMessage = data.message;
           this.showMessage(data.message, ToastTypes.DANGER);
@@ -134,30 +249,28 @@ export class NewProcessStep implements OnInit {
   }
   deleteProcessStep() {
     this.isLoading = true;
-    this.processService
-      .deleteProcessStep(this.process!.id, this.selectedProcessStep!.id)
-      .subscribe({
-        next: (data) => {
-          if (data.succeed) {
-            const current = this.processSteps$.getValue();
-            const updated = current.filter((step) => step.id !== this.selectedProcessStep!.id);
-            this.processSteps$.next(updated);
-            this.showMessage(MSG_DELETE_PROCESS_STEP_SUCCESS, ToastTypes.SUCCESS);
-          } else {
-            // this.errorMessage = data.message;
-            this.showMessage(data.message, ToastTypes.DANGER);
+    this.flowcharService.deleteNode(this.selectedNode!.id).subscribe({
+      next: (data) => {
+        if (data.succeed) {
+          const current = this.flowchartNodes$.getValue();
+          const updated = current.filter((step) => step.id !== this.selectedNode!.id);
+          this.flowchartNodes$.next(updated);
+          this.showMessage(MSG_DELETE_PROCESS_STEP_SUCCESS, ToastTypes.SUCCESS);
+        } else {
+          // this.errorMessage = data.message;
+          this.showMessage(data.message, ToastTypes.DANGER);
 
-            // this.eventService.showServerError(data)
-          }
-          this.isLoading = false;
-        },
-        error: (err) => {
-          this.isLoading = false;
-          //this.errorMessage = ERR_INTERNAL_SERVER;
+          // this.eventService.showServerError(data)
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.isLoading = false;
+        //this.errorMessage = ERR_INTERNAL_SERVER;
 
-          this.showMessage(ERR_INTERNAL_SERVER, ToastTypes.DANGER);
-        },
-      });
+        this.showMessage(ERR_INTERNAL_SERVER, ToastTypes.DANGER);
+      },
+    });
   }
   validateProcess(name: string, description: string) {
     if (name === '') {
@@ -167,16 +280,16 @@ export class NewProcessStep implements OnInit {
       this.showMessage(ERR_ENTER_NEW_PROCESS_DESC, ToastTypes.DANGER);
       // this.errorMessage = ERR_ENTER_NEW_PROCESS_DESC;
     } else {
-      var newProcess: UpdateProcessDto = {
+      var flowchart: UpdateFlowchartDto = {
         Name: name,
         Description: description,
       };
-      this.updateProcess(this.process!.id, newProcess);
+      this.updateProcess(this.flowchart!.id, flowchart);
     }
   }
-  updateProcess(processId: number, process: UpdateProcessDto) {
+  updateProcess(flowchartId: number, flowchart: UpdateFlowchartDto) {
     this.isLoading = true;
-    this.processService.updateProcess(processId, process).subscribe({
+    this.flowcharService.updateFlowchart(flowchartId, flowchart).subscribe({
       next: (data) => {
         if (data.succeed) {
           this.btnCloseModal.nativeElement?.click();
@@ -198,9 +311,9 @@ export class NewProcessStep implements OnInit {
       },
     });
   }
-  updateProcessStep(processId: number, stepId: number, step: UpdateProcessStepDto) {
+  updateNode(nodeId: number, node: UpdateFlowchartNodeDto) {
     this.isLoading = true;
-    this.processService.updateProcessStep(processId, stepId, step).subscribe({
+    this.flowcharService.updateNode(nodeId, node).subscribe({
       next: (data) => {
         this.isLoading = false;
 
@@ -210,14 +323,14 @@ export class NewProcessStep implements OnInit {
         }
 
         // assuming data.data is the updated ProcessStepResDto
-        const updatedStep: ProcessStepResDto = data.data;
+        const updatedNode: FlowchartNodeResDto = data.data;
 
         // update BehaviorSubject immutably
-        const current = this.processSteps$.getValue();
+        const current = this.flowchartNodes$.getValue();
         const updatedList = current.map((s) =>
-          s.id === updatedStep.id ? { ...s, ...updatedStep } : s
+          s.id === updatedNode.id ? { ...s, ...updatedNode } : s
         );
-        this.processSteps$.next(updatedList);
+        this.flowchartNodes$.next(updatedList);
 
         this.btnCloseModal.nativeElement?.click();
         this.showMessage(MSG_UPDATE_PROCESS_STEP_SUCCESS, ToastTypes.SUCCESS);
@@ -230,32 +343,89 @@ export class NewProcessStep implements OnInit {
       },
     });
   }
-  private setProccessStepsData(data: ProcessStepResDto[]) {
-    const newProcessStep = data.map((newStep: ProcessStepResDto) => ({
-      ...newStep,
+  private setNodesData(data: FlowchartNodeResDto[]) {
+    const node = data.map((node: FlowchartNodeResDto) => ({
+      ...node,
       isSelected: false,
     }));
 
-    const currentProcessSteps = this.processSteps$.getValue();
-    const updatedProcessSteps = [...currentProcessSteps, ...newProcessStep];
-    this.processSteps$.next(updatedProcessSteps);
+    const currentNodes = this.flowchartNodes$.getValue();
+    const updatedNodes = [...currentNodes, ...node];
+    this.flowchartNodes$.next(updatedNodes);
   }
-  trackByProcessStepId(index: number, processStep: ProcessStepResDto): number {
-    return processStep.id; // Assuming 'id' is a unique identifier for each document
+  trackByNodeId(index: number, node: FlowchartNodeResDto): number {
+    return node.id; // Assuming 'id' is a unique identifier for each document
   }
-  setSelectedStep(processStep: ProcessStepResDto) {
-    this.selectedProcessStep = processStep;
+  setSelectedNode(node: FlowchartNodeResDto) {
+    this.selectedNode = node;
   }
 
-  showDeleteProcessStepPrompt(step: ProcessStepResDto) {
-    this.setSelectedStep(step);
+  showDeleteNodePrompt(node: FlowchartNodeResDto) {
+    this.setSelectedNode(node);
     var promptData: PromptData = {
       title: DELETE_PROCESS_STEP,
-      description: `${MSG_DELETE_PROMPT} ${PROCESS_STEP} ${step.name} ${MSG_ARE_YOU_SURE}`,
+      description: `${MSG_DELETE_PROMPT} ${PROCESS_STEP} ${node.label} ${MSG_ARE_YOU_SURE}`,
       promptCommand: DELETE_PROCESS_STEP_COMMAND,
     };
     this.store.dispatch(setShowModalAction({ showModalName: 'Prompt', data: promptData }));
   }
+  showSelectConfirmerPrompt() {
+    // this.setSelectedNode(node);
+    var promptData: PromptData = {
+      title: SELECT_CONFIRMER,
+      description: ``,
+      promptCommand: SELECT_CONFIRMER_PERSON_COMMAND,
+    };
+    this.store.dispatch(setShowModalAction({ showModalName: 'Prompt', data: promptData }));
+  }
+  getFlowchart(id: number) {
+    this.isLoading = true;
+    this.flowcharService.getFlowchart(id).subscribe({
+      next: (data) => {
+        this.isLoading = false;
+        if (data.succeed) {
+          this.setNodesData(data.data.nodes);
+        } else {
+          this.showMessage(data.message, ToastTypes.DANGER);
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showMessage(ERR_CANNOT_CONNECT_SERVER, ToastTypes.SUCCESS);
+      },
+    });
+  }
 
-  
+  getFlowchartMarmaid(id: number) {
+    this.isLoading = true;
+    this.flowcharService.getFlowchartMermaid(id).subscribe({
+      next: (data) => {
+        this.isLoading = false;
+        if (data.succeed) {
+          this.flowchartDef = data.data.flowchart;
+        } else {
+          this.showMessage(data.message, ToastTypes.DANGER);
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showMessage(ERR_CANNOT_CONNECT_SERVER, ToastTypes.SUCCESS);
+      },
+    });
+  }
+
+  onTaskTypeChange(taskType: TaskType) {
+    console.log('Selected task type:', taskType);
+    // call your logic here
+    switch (taskType) {
+      case TaskType.ConfirmByDepAdmin:
+        this.confirmByDepAdmin = true;
+        break;
+      case TaskType.ConfirmByPerson:
+        this.selectConfirmer = true;
+        break;
+      default:
+        this.selectConfirmer = false;
+    }
+  }
 }

@@ -16,7 +16,7 @@ import {
   LOGOUT_COMMAND,
   RESTORE_PROCESS_COMMAND,
 } from '../../../../constants/prompt_commands';
-import { modalConfirmAction } from '../../../../states/actions/modal.actions';
+import { modalConfirmAction, modalConfirmWithDataAction } from '../../../../states/actions/modal.actions';
 
 @Component({
   selector: 'app-prompt',
@@ -74,5 +74,7 @@ export class PromptComponent implements OnInit, OnChanges {
     // this.eventService.deleteImage(true)
 
     document.getElementById('btnClosePromptModal')?.click();
+
+   
   }
 }
