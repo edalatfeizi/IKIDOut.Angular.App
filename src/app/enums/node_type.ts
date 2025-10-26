@@ -6,7 +6,8 @@ export enum NodeType {
 }
 export const NodeTypeLabels: Record<NodeType, string> = {
   [NodeType.Start]: 'شروع فرآیند',
-  [NodeType.End]: 'پایان فرآیند',
   [NodeType.Action]: 'اجرایی',
   [NodeType.Expression]: 'شرطی',
+  [NodeType.End]: 'پایان فرآیند',
+
 };

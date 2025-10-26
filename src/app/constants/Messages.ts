@@ -94,6 +94,8 @@ export const MSG_UPDATE_PROCESS_SUCCESS = 'بروز رسانی فرآیند با
 export const MSG_UPDATE_PROCESS_STEP_SUCCESS = 'بروز رسانی زیر فرآیند با موفقیت انجام شد.';
 export const MSG_DELETE_PROCESS_STEP_SUCCESS = 'حذف زیر فرآیند با موفقیت انجام شد.';
 export const MSG_DELETE_PROCESS_SUCCESS = 'حذف فرآیند با موفقیت انجام شد.';
+export const ERR_ENTER_NEW_PROCESS_STEP_CONFIRMER_USER = 'لطفا شخص تایید کننده زیر فرآیند جدید را وارد نمایید.';
+export const ERR_ENTER_NEW_PROCESS_STEP_CONFIRMER_POST_USER = 'لطفا پست تایید کننده زیر فرآیند جدید را وارد نمایید.';
 
 export const DELETE_PROCESS_STEP = 'حذف زیر فرآیند';
 export const PROCESS_STEP = 'زیر فرآیند';

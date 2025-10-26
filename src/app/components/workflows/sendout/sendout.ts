@@ -1,12 +1,219 @@
-import { Component } from '@angular/core';
-import { Flowchart } from "../../common/flow-chart/flow-chart";
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FlowChartService } from '../../../services/flowchart.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ToastTypes } from '../../../enums/toast_types';
+import { showToast } from '../../../states/actions/toast.actions';
+import { ERR_CANNOT_CONNECT_SERVER, PROCESS } from '../../../constants/Messages';
+import { BehaviorSubject, forkJoin, map } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { Router } from '@angular/router';
+import { Actions } from '@ngrx/effects';
+import { FlowchartResDto } from '../../../models/api/response/flowchart/flowchart_res_dto';
+import { PromptData } from '../../../models/prompt_data';
+import { SHOW_FLOWCHART_COMMAND } from '../../../constants/prompt_commands';
+import {
+  modalConfirmWithDataAction,
+  setShowModalAction,
+} from '../../../states/actions/modal.actions';
+import { FlowchartModal } from "../../common/modals/flowchart/flowchart";
+import mermaid from 'mermaid';
 
 @Component({
   selector: 'app-sendout',
-  imports: [ Flowchart],
+  imports: [CommonModule, FormsModule, FlowchartModal],
   templateUrl: './sendout.html',
-  styleUrl: './sendout.css'
+  styleUrl: './sendout.css',
 })
-export class Sendout {
-stepNum = 1
+export class Sendout implements OnInit, AfterViewInit{
+  @ViewChild('mermaidContainer', { static: false }) mermaidContainer!: ElementRef;
+
+  showingFlowcharts$ = new BehaviorSubject<FlowchartResDto[]>([]);
+
+  isLoading = false;
+  selectedFlowchartId: number = 0;
+  selectedFlowchart: FlowchartResDto | undefined = undefined
+  flowcharts$ = new BehaviorSubject<FlowchartResDto[]>([]);
+  constructor(
+    private flowchartsService: FlowChartService,
+    private store: Store,
+    private router: Router,
+    private actions$: Actions
+  ) {}
+ngAfterViewInit(): void {
+     mermaid.initialize({ startOnLoad: false, theme: 'default' });
+
+    // Render an initial chart if needed
+    // this.renderMermaid(``);
+  }
+  ngOnInit(): void {
+    this.getAppProccesses();
+  }
+  stepNum = 1;
+     flowchartDef = ``;
+
+  // getAppProccesses() {
+  //   this.isLoading = true;
+  //   this.flowchartsService.getAppFlowcharts().subscribe({
+  //     next: (data) => {
+  //       this.isLoading = false;
+  //       if (data.succeed) {
+  //         this.setFlowchartsData(data.data);
+  //         if (data.totalCount === 0)
+  //           // this.store.dispatch(
+  //           //   shareProfileAction({personNationalCode: this.EmpNationalCode, isProfileShared: false })
+  //           // )
+  //           console.log('No Processes');
+  //       } else {
+  //         this.showMessage(data.message, ToastTypes.DANGER);
+  //       }
+  //     },
+  //     error: (err) => {
+  //       this.isLoading = false;
+  //       this.showMessage(ERR_CANNOT_CONNECT_SERVER, ToastTypes.SUCCESS);
+  //     },
+  //   });
+  // }
+
+  // private setFlowchartsData(data: FlowchartResDto[]) {
+  //   const flowcharts = data.map((flowchart: FlowchartResDto) => ({
+  //     ...flowchart,
+  //     isSelected: false,
+  //   }));
+
+  //   const currentFlowcharts = this.flowcharts$.getValue();
+  //   const updatedFlowcharts = [...currentFlowcharts, ...flowcharts];
+  //   this.flowcharts$.next(updatedFlowcharts);
+  // }
+
+getAppProccesses() {
+    this.isLoading = true;
+    this.flowchartsService.getAppFlowcharts().subscribe({
+      next: (data) => {
+        this.isLoading = false;
+        if (data.succeed) {
+          this.setProccessesData(data.data);
+          if (data.totalCount === 0)
+            // this.store.dispatch(
+            //   shareProfileAction({personNationalCode: this.EmpNationalCode, isProfileShared: false })
+            // )
+            console.log('No Processes');
+        } else {
+          this.showMessage(data.message, ToastTypes.DANGER);
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showMessage(ERR_CANNOT_CONNECT_SERVER, ToastTypes.SUCCESS);
+      },
+    });
+  }
+
+private setProccessesData(data: FlowchartResDto[]) {
+    const newProcesses = data.map((doc: FlowchartResDto) => ({
+      ...doc,
+      isSelected: false,
+    }));
+
+  // Create an array of observables for each process
+  const requests = newProcesses.map(proc =>
+    this.flowchartsService.getFlowchartMermaid(proc.id).pipe(
+      map(res => {
+        if (res.succeed) {
+          // normalize line breaks
+          proc.flowcharDef = res.data.flowchart
+            // .replace(/\r\n/g, '\n')
+            // .replace(/\r/g, '\n');
+        } else {
+          this.showMessage(res.message, ToastTypes.DANGER);
+        }
+        return proc;
+      })
+    )
+  );
+  // Run all requests in parallel
+  forkJoin(requests).subscribe({
+    next: (processesWithFlowcharts) => {
+      const currentProcesses = this.flowcharts$.getValue();
+      const updatedProcesses = [...currentProcesses, ...processesWithFlowcharts];
+
+      this.flowcharts$.next(updatedProcesses);
+      this.filterProcesses(undefined);
+    },
+    error: () => {
+      this.showMessage(ERR_CANNOT_CONNECT_SERVER, ToastTypes.DANGER);
+    }
+  });
+    // const currentProcesses = this.flowcharts$.getValue();
+    // const updatedProcesses = [...currentProcesses, ...newProcesses];
+
+    // this.flowcharts$.next(updatedProcesses);
+    // this.filterProcesses(undefined)
+  }
+  filterProcesses(active: boolean | undefined) {
+    if (active == undefined) {
+      this.showingFlowcharts$.next(this.flowcharts$.getValue());
+    } else {
+      this.showingFlowcharts$.next([]);
+      const current = this.flowcharts$.getValue(); // get the current value
+      const filtered = current.filter((proc) => proc.active === active);
+      this.showingFlowcharts$.next(filtered);
+    }
+  }
+
+  showMessage(message: string, toastType: ToastTypes) {
+    this.store.dispatch(showToast({ toastModel: { toastType: toastType, message: message } }));
+  }
+  private async renderMermaid(definition: string) {
+    if (!this.mermaidContainer) return;
+
+    // Mermaid 10+ supports async rendering
+    try {
+      const { svg } = await mermaid.render('graphDiv', definition);
+      this.mermaidContainer.nativeElement.innerHTML = svg;
+    } catch (err) {
+      console.error('Mermaid render error:', err);
+      this.mermaidContainer.nativeElement.innerHTML = '<p style="color:red;">خطا در نمایش اطلاعات فرآیند</p>';
+    }
+  }
+  showFlowchart(flowchartId: number) {
+    var id = flowchartId as number
+    // const newDefinition  = `
+    // flowchart TD  
+    // 37(start) --> 
+    // |انتخاب محصول|38(node 1)
+    
+    // 38(node 1) -->  
+    // |تست 1|39{node 2}`
+    //    this.renderMermaid(newDefinition);
+
+     this.selectedFlowchart = this.flowcharts$.value.find(x => x.id == id);
+    // this.store.dispatch(
+    //   modalConfirmWithDataAction({
+    //     confirmCommand: SHOW_FLOWCHART_COMMAND,
+    //     data: flowchart?.id,
+    //   })
+    // );
+
+  this.flowchartsService.getFlowchartMermaid(this.selectedFlowchart!.id).subscribe({
+      next: (data) => {
+        this.isLoading = false;
+        if (data.succeed) {
+          const newDefinition = data.data.flowchart
+        this.renderMermaid(newDefinition);
+  
+
+        } else {
+          this.showMessage(data.message, ToastTypes.DANGER);
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showMessage(ERR_CANNOT_CONNECT_SERVER, ToastTypes.SUCCESS);
+      },
+    });
+
+  }
+
+  
 }

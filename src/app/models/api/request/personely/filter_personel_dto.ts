@@ -4,5 +4,5 @@ export type FilterPersonel = {
   departName: string | null; //used just in view
   engageType: string | null;
   sortByEngageDate: string | null;
-  postTypes: number[];
+  //postTypes: number[];
 };

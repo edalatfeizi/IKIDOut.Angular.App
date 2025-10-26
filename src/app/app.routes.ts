@@ -9,7 +9,6 @@ import { confirmGuard } from './services/guards/confirm.guard';
 import { NewProcessStep } from './components/processes/new-process/new-process-step';
 import { ProcessList } from './components/processes/process-list/process-list';
 import { Sendout } from './components/workflows/sendout/sendout';
-import { Flowchart } from './components/common/flow-chart/flow-chart';
 
 export const routes: Routes = [
   { path: '', component: Home, canActivate: [authGuard] },
@@ -42,8 +41,8 @@ export const routes: Routes = [
     component: Sendout,
     canActivate: [authGuard],
   },
-  {
-    path: 'flowchart',
-    component: Flowchart,
-  },
+  // {
+  //   path: 'flowchart',
+  //   component: Flowchart,
+  // },
 ];

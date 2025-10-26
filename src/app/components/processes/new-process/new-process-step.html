@@ -102,14 +102,22 @@
               </div>
               <div class="row">
                 <label>نوع عملیات </label>
-                <select [(ngModel)]="selectedTaskType"  (ngModelChange)="onTaskTypeChange($event)">
+                <select [(ngModel)]="selectedTaskType">
                   <option *ngFor="let type of taskTypes" [ngValue]="type">
                     {{ TaskTypeLabels[type] }}
                   </option>
                 </select>
                
               </div>
-       
+              <div class="row">
+                <label>نوع تایید کننده </label>
+                <select [(ngModel)]="selectedTaskConfirmationType" (ngModelChange)="onConfirmTaskTypeChange($event)">
+                  <option *ngFor="let type of taskConfirmationTypes" [ngValue]="type">
+                    {{ TaskConfirmationTypeLabels[type] }}
+                  </option>
+                </select>
+               
+              </div>
               <div class="mb-3">
                 <div class="form-control" class="job-filter mb-3">
                   <a
@@ -117,8 +125,8 @@
                   data-bs-toggle="modal"
                   data-bs-target="#selectConfirmerModal"
                   class="btn btn-primary btn-block"
-                  [class.disabled]="!selectConfirmer || !confirmByDepAdmin"
-                  [class.pointer-events-none]="!selectConfirmer || !confirmByDepAdmin"
+                  [class.disabled]="confirmByDepAdmin"
+                  [class.pointer-events-none]="confirmByDepAdmin"
                 >
                 انتخاب تایید کننده
                </a>
@@ -132,7 +140,7 @@
                 [class.disabled]="isLoading || !flowchart?.active"
                 [class.pointer-events-none]="isLoading"
                 (click)="
-                  validateNewNode(selectedNodeType, selectedTaskType, nodeLabel.value, true)
+                  validateNewNode(selectedNodeType, selectedTaskType, selectedTaskConfirmationType, nodeLabel.value, true)
                 "
               >
                 @if(!isLoading) {
@@ -144,6 +152,12 @@
                 }
               </div>
               </div>
+              <span
+              id="terms-error"
+              class="error invalid-feedback"
+              style="display: inline"
+              [innerHTML]="errorMessage"
+            ></span>
             </div>
           </div>
         </div>
@@ -168,7 +182,7 @@
 
                 <select id="nodeSelect" [(ngModel)]="startNodeId">
                   <option *ngFor="let node of flowchartNodes$ | async" [value]="node.id">
-                    {{ node.label }}
+                    {{ node.label }} - {{NodeTypeLabels[node.nodeType]}}
                   </option>
                 </select>
               </div>
@@ -372,11 +386,20 @@
                   </option>
                 </select>
               </div>
-              <div class="mb-3">
+              <div class="row">
                 <label>نوع عملیات </label>
-                <select class="form-control" [(ngModel)]="selectedTaskType"  (ngModelChange)="onTaskTypeChange($event)">
+                <select [(ngModel)]="selectedTaskType">
                   <option *ngFor="let type of taskTypes" [ngValue]="type">
                     {{ TaskTypeLabels[type] }}
+                  </option>
+                </select>
+               
+              </div>
+              <div class="row">
+                <label>نوع تایید کننده </label>
+                <select [(ngModel)]="selectedTaskConfirmationType" >
+                  <option *ngFor="let type of taskConfirmationTypes" [ngValue]="type">
+                    {{ TaskConfirmationTypeLabels[type] }}
                   </option>
                 </select>
                
@@ -388,8 +411,6 @@
                   data-bs-toggle="modal"
                   data-bs-target="#selectConfirmerModal"
                   class="btn btn-primary btn-block"
-                  [class.disabled]="!selectConfirmer"
-                  [class.pointer-events-none]="!selectConfirmer"
                 >
                 انتخاب تایید کننده
                </a>
@@ -397,6 +418,7 @@
                 </div>
                
               </div>
+       
               <span
                 id="terms-error"
                 class="invalid-feedback"
@@ -419,7 +441,7 @@
               class="btn btn-primary btn-block"
               [class.disabled]="isLoading"
               [class.pointer-events-none]="isLoading"
-              (click)="validateNewNode(selectedNodeType, selectedTaskType, nodeLabel.value, false)"
+              (click)="validateNewNode(selectedNodeType, selectedTaskType, selectedTaskConfirmationType, nodeLabel.value, false)"
             >
               @if(!isLoading) {
               <span>ذخیره تغییرات</span>

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FlowChart } from './flow-chart';
+import { Flowchart } from './flowchart';
 
-describe('FlowChart', () => {
-  let component: FlowChart;
-  let fixture: ComponentFixture<FlowChart>;
+describe('Flowchart', () => {
+  let component: Flowchart;
+  let fixture: ComponentFixture<Flowchart>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FlowChart]
+      imports: [Flowchart]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(FlowChart);
+    fixture = TestBed.createComponent(Flowchart);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

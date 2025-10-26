@@ -27,43 +27,43 @@
               <div class="card-body" >
                 <div class="form theme-form projectcreate">
                     <label>انتخاب فرآیند</label>
-
+                    
                     <div class="row align-items-center">
                         <div class="col-sm-10">
                           <div class="mb-3">
-                            <select class="form-select">
-                              <option>خروج قطعی و دارایی ثابت</option>
-                              <option>خروج قطعی و دارایی غیر ثابت</option>
-                              <option>برگشت از خرید</option>
-                            </select>
-                          </div>
+                <select id="flowchartSelect" [(ngModel)]="selectedFlowchartId" (change)="showFlowchart(selectedFlowchartId)" >
+                  <!-- <option value="" disabled>انتخاب فرآیند خروج کالا</option> -->
+                  <option *ngFor="let flowchart of flowcharts$ | async" [value]="flowchart.id">
+                    {{ flowchart.name }}
+                  </option>
+                </select>
+                      </div>
                         </div>
                         <div class="col-sm-2">
                           <div class="mb-3">
-                            <button class="btn btn-primary w-100">
+                            <!-- <a class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#flowchartModal" (click)="showFlowchart(selectedFlowchartId)">
                               مشاهده فرآیند
-                            </button>
+                            </a> -->
+                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalLong" data-bs-original-title="" title="">مشاهده فرآیند</button>
                           </div>
                         </div>
                       </div>
                       
-              
-    
-                  <div class="row">
+                  <!-- <div class="row">
                     <div class="col">
-                      <div class="btn btn-primary btn-block"
-                      >
+                      <div class="btn btn-primary btn-block">
                           <span >ادامه</span>
                       
                       </div>
-                      <!-- <div class="text-end"><a (click)="validate(processName.value, processDesc.value)" class="btn btn-primary m-r-15" href="#">افزودن</a></div> -->
+                      <div class="text-end"><a (click)="validate(processName.value, processDesc.value)" class="btn btn-primary m-r-15" href="#">افزودن</a></div>
                     </div>
-                  </div>
+                  </div> -->
     
                 </div>
               </div>
             </div>
           </div>
+    
         </div>
       </div>
     <!-- Container-fluid starts-->
@@ -93,9 +93,9 @@
                   <div class="row">
                     <div class="job-search">
                       <div class="card-body pb-0">
-                   
+                        
                         <div class="job-description">
-                      
+                          
                           <!-- <h6 class="mb-0">تحصیلات شما</h6> -->
                           <form class="form theme-form">
                             <div class="row">
@@ -259,7 +259,7 @@
                 </div>
                 <div class="tab-pane fade" id="top-profile" role="tabpanel" aria-labelledby="profile-top-tab">
                   <div class="row">
-                    <app-flow-chart></app-flow-chart>
+                    <app-flowchart-modal></app-flowchart-modal>
                   </div>
                 </div>
                 
@@ -272,4 +272,21 @@
     
     <!-- Container-fluid Ends-->
   </div>
-  
+<div class="modal fade" id="exampleModalLong" tabindex="-1" aria-labelledby="exampleModalLongTitle" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">نمایش فرآیند {{selectedFlowchart?.name}}</h5>
+                          <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close" data-bs-original-title="" title=""></button>
+                        </div>
+                        <div class="modal-body">
+                                        <div #mermaidContainer class="mermaid"></div>
+
+                        </div>
+                        <div class="modal-footer">
+                          <button class="btn btn-secondary" type="button" data-bs-dismiss="modal" data-bs-original-title="" title="">بستن</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+

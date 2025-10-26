@@ -4,7 +4,7 @@ export const BaseUrl = isDevMode() ? 'https://localhost:7037/' : 'http://ikidout
 // export const BaseUrl = 'http://localhost:5108/'
 // export const BaseUrl = 'https://localhost:7037/'
 export const API_V1 = 'api/v1/';
-export const PAGE_SIZE = 100;
+export const PAGE_SIZE = 50;
 export const IMAGES_PAGE_SIZE = 20;
 
 /** Images */
@@ -53,3 +53,8 @@ export const API_PROCESSES = BaseUrl + API_V1 + 'processes';
 export const API_GET_APP_FLOWCHARTS = BaseUrl + API_V1 + 'app/flowcharts';
 export const API_FLOWCHARTS = BaseUrl + API_V1 + 'flowcharts';
 /** APP Flowcharts API EndPoints End*/
+
+
+/** Persons */
+export const API_PERSONELY = BaseUrl + API_V1 + 'personely'
+export const API_GET_PERSONS = API_PERSONELY + '/filter'

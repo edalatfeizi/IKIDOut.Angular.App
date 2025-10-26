@@ -1,0 +1,38 @@
+<ng-container *ngIf="Person">
+  <div class="card" (click)="showProfile(Person)">
+    <div *ngIf="Person" style="position: relative; height: 120px">
+      <img
+        [src]="path"
+        alt="Cover"
+        class="card-img-top"
+        style="height: 120px; width: 100%"
+      />
+    
+      <app-image
+        alt=""
+        style="
+          position: absolute;
+          top: 120px;
+          left: 50%;
+          transform: translateX(-50%);
+        "
+        nationalCode="{{ Person.nationalCode }}"
+        [showInList]="true"
+      />
+    </div>
+    <div *ngIf="Person" class="card-body text-center" style="margin-top: 20px">
+      <p class="mb-1" style="color: #252525">
+        {{ Person.firstName }} {{ Person.lastName }}
+      </p>
+
+      <p class="text-muted font-size-sm profile-row text-center">
+         {{ Person.posttxt }}
+      </p>
+      <!-- <p class="text-muted font-size-sm profile-row">
+        {{ Person.departTitle }}
+      </p> -->
+      
+    </div>
+
+  </div>
+</ng-container>

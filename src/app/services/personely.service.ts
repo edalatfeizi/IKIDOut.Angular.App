@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import {
-  API_GET_DEPARTMENTS,
-  API_GET_EMP_ALL_SHARED_FOLDERS_BY_ALL_USERS,
-  API_GET_ENGAGE_TYPES,
   API_GET_PERSONS,
   PAGE_SIZE,
 } from '../constants/ApiConstants'

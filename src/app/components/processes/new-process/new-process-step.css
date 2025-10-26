@@ -88,3 +88,7 @@ label {
 .job-filter .faq-form .search-icon{
   margin-top: 5px;
 }
+
+.error{
+  color: red;
+}

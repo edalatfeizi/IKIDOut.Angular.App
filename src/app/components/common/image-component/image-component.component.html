@@ -1,0 +1,79 @@
+<!-- <img 
+  class="circular_image profile-user-img img-fluid img-circle"
+  [src]="image"
+  [alt]="alt"
+  onerror="this.src='../../../../assets/images/img_profile.png';"
+/> -->
+
+<ng-container *ngIf="isCircular; else elseif1">
+  @if (isCircular && showInList === false) {
+    <img
+      class="circular_image"
+      [src]="image"
+      [alt]=""
+      loading="lazy"
+      error="this.src='{{ avatarPath }}';"
+    />
+  } @else if (nationalCode && showInList) {
+    <img
+      [src]="image"
+      [alt]=""
+      loading="lazy"
+      style="width: 100px; height: 100px; margin-top: -65px"
+      class="img-fluid img-thumbnail rounded-circle border-0"
+      error="this.src='{{ avatarPath }}';"
+    />
+  } @else if (nationalCode && showInList === false) {
+    <img
+      [src]="image"
+      [alt]="alt"
+      loading="lazy"
+      style="width: 50px; height: 50px"
+      class="img-fluid img-thumbnail rounded-circle border-0"
+      error="this.src='{{ noImagePath }}';"
+    />
+  } @else if (nationalCode === '' && showInList) {
+    <img
+      [src]="image"
+      [alt]=""
+      loading="lazy"
+      style="width: 100px; height: 100px; margin-top: -65px"
+      class="img-fluid img-thumbnail rounded-circle border-0"
+      error="this.src='{{ avatarPath }}';"
+    />
+  } @else if (nationalCode === '' && showInList === false) {
+    <img
+      [src]="image"
+      [alt]="alt"
+      loading="lazy"
+      style="width: 50px; height: 50px"
+      class="img-fluid img-thumbnail rounded-circle border-0"
+      error="this.src='{{ noImagePath }}';"
+    />
+  } @else {
+    <img
+      class="image--cover"
+      [src]="image"
+      [alt]="alt"
+      loading="lazy"
+      error="this.src='{{ avatarPath }}';"
+    />
+  }
+</ng-container>
+
+<ng-template #elseif1>
+  <div class="image-container">
+    <div class="shimmer" *ngIf="!imageLoaded"></div>
+    <p-image
+      *ngIf="imageLoaded"
+      #docImage
+      [src]="image"
+      [alt]="alt"
+      [width]="width"
+      [height]="width"
+      [preview]="true"
+      (onImageError)="onDocImageError($event)"
+      (contextmenu)="onImageContextMenu($event)"
+    ></p-image>
+  </div>
+</ng-template>

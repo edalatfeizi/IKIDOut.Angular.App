@@ -5,6 +5,7 @@ export interface PersonDto extends BaseDto {
   lastName: string;
   personCode: string;
   posttxt: string;
+  postId: number;
   departName: string;
   fatherName: string;
   nationalCode: string;

@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { AfterViewInit, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Sidebar } from './components/sidebar/sidebar';
 import { Header } from './components/header/header';
@@ -26,17 +26,24 @@ import {
   LOGOUT_COMMAND,
   RESTORE_PROCESS_COMMAND,
   SELECT_CONFIRMER_PERSON_COMMAND,
+  SHOW_FLOWCHART_COMMAND,
 } from './constants/prompt_commands';
 import { ModalState } from './states/selectors/states/modal-states.state';
 import { selectModalState } from './states/selectors/modal.selectors';
 import { SelectConfirmer } from "./components/common/modals/prompt/select-confirmer/select-confirmer";
+import { Actions, ofType } from '@ngrx/effects';
+import { modalConfirmWithDataAction } from './states/actions/modal.actions';
+import { FlowchartResDto } from './models/api/response/flowchart/flowchart_res_dto';
+import { FlowchartModal } from "./components/common/modals/flowchart/flowchart";
+import mermaid from 'mermaid';
+
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, Sidebar, Footer, AsyncPipe, PromptComponent, SelectConfirmer],
+  imports: [RouterOutlet, Header, Sidebar, Footer, AsyncPipe, PromptComponent, SelectConfirmer, FlowchartModal],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App implements OnInit, OnDestroy {
+export class App implements OnInit, OnDestroy , AfterViewInit{
   promptData: PromptData | null = null;
   showModal$: Observable<ModalState>;
 
@@ -58,7 +65,10 @@ export class App implements OnInit, OnDestroy {
   isVisible$: Observable<boolean> = this.store.select(selectIsToastVisible);
   deleteNodePrompModal = DELETE_PROCESS_STEP_COMMAND
   selectConfirmerPrompModal = SELECT_CONFIRMER_PERSON_COMMAND
-  constructor() {
+  showFlowchartModal = SHOW_FLOWCHART_COMMAND
+  flowchartId : number | null =  null
+
+  constructor(private actions$: Actions) {
     // this.store
     //   .select(selectShowToast)
     //   .pipe(takeUntil(this.unsubscribeAuthState$))
@@ -68,7 +78,13 @@ export class App implements OnInit, OnDestroy {
     //     }
     //   });
     this.showModal$ = this.store.select(selectModalState); // or 'showModal' string key
-
+    this.actions$.pipe(ofType(modalConfirmWithDataAction)).subscribe((action) => {
+      switch (action.confirmCommand) {
+        case SHOW_FLOWCHART_COMMAND:
+          this.flowchartId = action.data as number;
+          break;
+      }
+    });
     this.showModal$.subscribe((modalState) => {
       // modalState is now an object with {showModal, data} from initial state onwards
       switch ((modalState.data as PromptData).promptCommand) {
@@ -83,9 +99,12 @@ export class App implements OnInit, OnDestroy {
         default:
           this.promptData = null;
       }
+
     });
   }
-
+  ngAfterViewInit(): void {
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  }
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

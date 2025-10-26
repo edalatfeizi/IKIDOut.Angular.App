@@ -1,5 +1,4 @@
 export type ConfirmerUser = {
-  userId: string
-  post: string
-  personCode: string
+  PersonCode: string
+  PostId: number
 }

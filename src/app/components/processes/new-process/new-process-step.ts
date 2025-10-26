@@ -8,6 +8,8 @@ import {
   ERR_CANNOT_CONNECT_SERVER,
   ERR_ENTER_NEW_PROCESS_DESC,
   ERR_ENTER_NEW_PROCESS_NAME,
+  ERR_ENTER_NEW_PROCESS_STEP_CONFIRMER_POST_USER,
+  ERR_ENTER_NEW_PROCESS_STEP_CONFIRMER_USER,
   ERR_ENTER_NEW_PROCESS_STEP_DESC,
   ERR_ENTER_NEW_PROCESS_STEP_NAME,
   ERR_INTERNAL_SERVER,
@@ -40,7 +42,11 @@ import {
   LOGOUT_COMMAND,
   SELECT_CONFIRMER_PERSON_COMMAND,
 } from '../../../constants/prompt_commands';
-import { modalConfirmAction, modalConfirmWithDataAction, setShowModalAction } from '../../../states/actions/modal.actions';
+import {
+  modalConfirmAction,
+  modalConfirmWithDataAction,
+  setShowModalAction,
+} from '../../../states/actions/modal.actions';
 import { Actions, ofType } from '@ngrx/effects';
 import { FlowchartResDto } from '../../../models/api/response/flowchart/flowchart_res_dto';
 import { FlowchartNodeResDto } from '../../../models/api/response/flowchart/flowchart_node_res_dto';
@@ -53,6 +59,10 @@ import mermaid from 'mermaid';
 import { AddFlowchartEdgeDto } from '../../../models/api/request/flowchart/add_flowchart_edge_dto';
 import { TaskType, TaskTypeLabels } from '../../../enums/task_type';
 import { ConfirmerUser } from '../../../models/confirmer_user';
+import {
+  TaskConfirmationType,
+  TaskConfirmationTypeLabels,
+} from '../../../enums/task_confirmation_type';
 
 @Component({
   selector: 'app-new-process',
@@ -82,15 +92,23 @@ export class NewProcessStep implements OnInit, AfterViewInit {
 
   taskTypes = Object.values(TaskType).filter((v) => typeof v === 'number') as TaskType[];
 
+  TaskConfirmationType = TaskConfirmationType;
+  TaskConfirmationTypeLabels = TaskConfirmationTypeLabels;
+
+  taskConfirmationTypes = Object.values(TaskConfirmationType).filter(
+    (v) => typeof v === 'number'
+  ) as TaskConfirmationType[];
+
   selectedTaskType: TaskType = TaskType.SelectProduct;
+  selectedTaskConfirmationType: TaskConfirmationType = TaskConfirmationType.ConfirmByPerson;
+
   flowchartDef = '';
 
   startNodeId: number = 0;
   endNodeId: number = 0;
-  selectConfirmer = false;
   confirmByDepAdmin = false;
-
-  confirmerUser: ConfirmerUser = { userId: '', post: '', personCode: '' };
+  // selectConfirmer = false;
+  confirmerUser: ConfirmerUser = { PostId: 0, PersonCode: '' };
   constructor(
     private flowcharService: FlowChartService,
     private store: Store,
@@ -102,16 +120,13 @@ export class NewProcessStep implements OnInit, AfterViewInit {
           this.deleteProcessStep();
           break;
 
-        case CONFIRM_SELECT_CONFIRMER_COMMAND:
-          this.showMessage('kljdksa', ToastTypes.INFO);
-          break;
       }
     });
     this.actions$.pipe(ofType(modalConfirmWithDataAction)).subscribe((action) => {
       switch (action.confirmCommand) {
-    
         case CONFIRM_SELECT_CONFIRMER_COMMAND:
-          this.showMessage('kljdksa', ToastTypes.INFO);
+          this.confirmerUser = action.data;
+          console.log(this.confirmerUser);
           break;
       }
     });
@@ -141,20 +156,41 @@ export class NewProcessStep implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     mermaid.initialize({ startOnLoad: true, theme: 'default' });
   }
-  validateNewNode(nodeType: NodeType, taskType: TaskType, label: string, isNewStep: boolean) {
+  validateNewNode(
+    nodeType: NodeType,
+    taskType: TaskType,
+    taskConfirmationType: TaskConfirmationType,
+    label: string,
+    isNewStep: boolean
+  ) {
     // if (type === '') {
     //   this.showMessage(ERR_ENTER_NEW_PROCESS_STEP_NAME, ToastTypes.DANGER);
     // } else
     if (label === '') {
-      this.showMessage(ERR_ENTER_NEW_PROCESS_STEP_DESC, ToastTypes.DANGER);
+      //this.showMessage(ERR_ENTER_NEW_PROCESS_STEP_DESC, ToastTypes.DANGER);
+      this.errorMessage = ERR_ENTER_NEW_PROCESS_STEP_NAME;
+    } else if (
+      taskConfirmationType == TaskConfirmationType.ConfirmByPerson &&
+      this.confirmerUser.PersonCode === ''
+    ) {
+      this.errorMessage = ERR_ENTER_NEW_PROCESS_STEP_CONFIRMER_USER;
+    }
+    else if (
+      taskConfirmationType == TaskConfirmationType.ConfirmByJobPost &&
+      this.confirmerUser.PostId === 0
+    ) {
+      this.errorMessage = ERR_ENTER_NEW_PROCESS_STEP_CONFIRMER_POST_USER;
     } else {
       if (isNewStep) {
         var node: AddFlowchartNodeDto = {
           FlowchartId: this.flowchart!.id,
           Label: label,
           Expression: '',
-          BPMSNodeType: nodeType,
+          NodeType: nodeType,
           TaskType: taskType,
+          TaskConfirmationType: taskConfirmationType,
+          ConfirmByPersonCode: this.confirmerUser.PersonCode,
+          ConfirmByJobPostId: this.confirmerUser.PostId,
         };
         this.addNode(node);
       } else {
@@ -163,6 +199,9 @@ export class NewProcessStep implements OnInit, AfterViewInit {
           Expression: '',
           NodeType: nodeType,
           TaskType: taskType,
+          TaskConfirmationType: taskConfirmationType,
+          ConfirmByPersonCode: this.confirmerUser.PersonCode,
+          ConfirmByJobPostId: this.confirmerUser.PostId,
         };
         this.updateNode(this.selectedNode!.id, updatedNode);
       }
@@ -202,7 +241,7 @@ export class NewProcessStep implements OnInit, AfterViewInit {
       next: (data) => {
         if (data.succeed) {
           this.setNodesData([data.data]);
-
+          this.confirmerUser = { PersonCode: '', PostId: 0 };
           this.showMessage(MSG_ADD_NEW_PROCESS_STEP_SUCCESS, ToastTypes.SUCCESS);
           // this.router.navigate(['processes/new'], {
           //   state: { newProcess: data.data },
@@ -366,6 +405,7 @@ export class NewProcessStep implements OnInit, AfterViewInit {
       title: DELETE_PROCESS_STEP,
       description: `${MSG_DELETE_PROMPT} ${PROCESS_STEP} ${node.label} ${MSG_ARE_YOU_SURE}`,
       promptCommand: DELETE_PROCESS_STEP_COMMAND,
+      // selectDepAdmin: false,
     };
     this.store.dispatch(setShowModalAction({ showModalName: 'Prompt', data: promptData }));
   }
@@ -375,6 +415,7 @@ export class NewProcessStep implements OnInit, AfterViewInit {
       title: SELECT_CONFIRMER,
       description: ``,
       promptCommand: SELECT_CONFIRMER_PERSON_COMMAND,
+      // selectDepAdmin: this.confirmByDepAdmin,
     };
     this.store.dispatch(setShowModalAction({ showModalName: 'Prompt', data: promptData }));
   }
@@ -414,18 +455,18 @@ export class NewProcessStep implements OnInit, AfterViewInit {
     });
   }
 
-  onTaskTypeChange(taskType: TaskType) {
-    console.log('Selected task type:', taskType);
-    // call your logic here
-    switch (taskType) {
-      case TaskType.ConfirmByDepAdmin:
+  onConfirmTaskTypeChange(taskConfirmationType: TaskConfirmationType) {
+    switch (taskConfirmationType) {
+      case TaskConfirmationType.ConfirmByRequesterDepAdmin:
         this.confirmByDepAdmin = true;
         break;
-      case TaskType.ConfirmByPerson:
-        this.selectConfirmer = true;
+      case TaskConfirmationType.ConfirmByPerson:
+      case TaskConfirmationType.ConfirmByJobPost:
+        this.confirmByDepAdmin = false;
         break;
       default:
-        this.selectConfirmer = false;
+        this.confirmByDepAdmin = false;
+        break;
     }
   }
 }

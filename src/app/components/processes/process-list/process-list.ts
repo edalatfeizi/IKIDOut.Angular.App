@@ -285,6 +285,7 @@ export class ProcessList implements OnInit {
       title: DELETE_PROCESS,
       description: `${MSG_DELETE_PROMPT} ${PROCESS} ${flowchart.name} ${MSG_ARE_YOU_SURE}`,
       promptCommand: DELETE_PROCESS_COMMAND,
+      // selectDepAdmin: false
     };
     this.store.dispatch(setShowModalAction({ showModalName: 'Prompt', data: promptData }));
   }
@@ -294,6 +295,7 @@ export class ProcessList implements OnInit {
       title: RESTORE_PROCESS,
       description: `${MSG_RESTORE_PROMPT} ${PROCESS} ${flowchart.name} ${MSG_ARE_YOU_SURE}`,
       promptCommand: RESTORE_PROCESS_COMMAND,
+      // selectDepAdmin: false
     };
     this.store.dispatch(setShowModalAction({ showModalName: 'Prompt', data: promptData }));
   }
