@@ -65,8 +65,6 @@ export class App implements OnInit, OnDestroy , AfterViewInit{
   isVisible$: Observable<boolean> = this.store.select(selectIsToastVisible);
   deleteNodePrompModal = DELETE_PROCESS_STEP_COMMAND
   selectConfirmerPrompModal = SELECT_CONFIRMER_PERSON_COMMAND
-  showFlowchartModal = SHOW_FLOWCHART_COMMAND
-  flowchartId : number | null =  null
 
   constructor(private actions$: Actions) {
     // this.store
@@ -78,13 +76,7 @@ export class App implements OnInit, OnDestroy , AfterViewInit{
     //     }
     //   });
     this.showModal$ = this.store.select(selectModalState); // or 'showModal' string key
-    this.actions$.pipe(ofType(modalConfirmWithDataAction)).subscribe((action) => {
-      switch (action.confirmCommand) {
-        case SHOW_FLOWCHART_COMMAND:
-          this.flowchartId = action.data as number;
-          break;
-      }
-    });
+
     this.showModal$.subscribe((modalState) => {
       // modalState is now an object with {showModal, data} from initial state onwards
       switch ((modalState.data as PromptData).promptCommand) {

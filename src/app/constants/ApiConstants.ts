@@ -58,3 +58,8 @@ export const API_FLOWCHARTS = BaseUrl + API_V1 + 'flowcharts';
 /** Persons */
 export const API_PERSONELY = BaseUrl + API_V1 + 'personely'
 export const API_GET_PERSONS = API_PERSONELY + '/filter'
+
+
+/** Shipping Points API EndPoints Start*/
+export const API_SHIPPING_POINTS = BaseUrl + API_V1 + 'shippingpoints';
+/** Shipping Points API EndPoints End*/

@@ -87,9 +87,7 @@ export class NewProcessStep implements OnInit, AfterViewInit {
 
   selectedNodeType: NodeType = NodeType.Start;
 
-  TaskType = TaskType;
   TaskTypeLabels = TaskTypeLabels;
-
   taskTypes = Object.values(TaskType).filter((v) => typeof v === 'number') as TaskType[];
 
   TaskConfirmationType = TaskConfirmationType;

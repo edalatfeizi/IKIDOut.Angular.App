@@ -103,10 +103,26 @@
 
                               <div class="col-xl-6 xl-100">
                                 <div class="form-group">
-                                  <label class="form-label" for="exampleFormControlInput5">ارسال به : </label>
-                                  <select class="form-select" >
-                                    <option>ساپکو</option>
-                                    <option>انبار اشتاد</option>
+                                  <label class="form-label" for="exampleFormControlInput5">از : </label>
+                                  <select id="FromShippingPointSelect" [(ngModel)]="selectedFromShippingPointId" >
+                                  <!-- <option value="" disabled>انتخاب فرآیند خروج کالا</option> -->
+                                    <option *ngFor="let shippingPoint of shippingPoints$ | async" [value]="shippingPoint.id">
+                                      {{ shippingPoint.name }}
+                                    </option>
+                                  </select>
+                                </div>
+                              </div>
+                              </div>
+                                       <div class="col-sm-6 xl-100 xl-mt-job">
+
+                              <div class="col-xl-6 xl-100">
+                                <div class="form-group">
+                                  <label class="form-label" for="exampleFormControlInput5">به : </label>
+                                  <select id="ToShippingPointSelect" [(ngModel)]="selectedToShippingPointId" >
+                                  <!-- <option value="" disabled>انتخاب فرآیند خروج کالا</option> -->
+                                    <option *ngFor="let shippingPoint of shippingPoints$ | async" [value]="shippingPoint.id">
+                                      {{ shippingPoint.name }}
+                                    </option>
                                   </select>
                                 </div>
                               </div>
@@ -128,13 +144,11 @@
                                 <div class="col-xl-6 xl-100">
                                   <div class="form-group">
                                     <label class="form-label" for="exampleFormControlInput5">نوع خروج : </label>
-                                    <select class="form-select" >
-                                      <option>موقت</option>
-                                      <option>قطعی</option>
-                                      <option>مدل فومی</option>
-                                      <option>خدماتی</option>
-                                      <option>محصول ساخت</option>
-                                    </select>
+                                       <select [(ngModel)]="selectedSendOutType">
+                                          <option *ngFor="let type of SendOutTypes" [ngValue]="type">
+                                              {{ SendOutTypeLabels[type] }}
+                                          </option>
+                                        </select>
                                   </div>
                                 </div>
                                 
@@ -144,11 +158,11 @@
                               <div class="col-xl-6 xl-100">
                                 <div class="form-group">
                                   <label class="form-label" for="exampleFormControlInput5">گروه کالا: </label>
-                                  <select class="form-select" >
-                                    <option>دارایی ثابت</option>
-                                    <option>کالای عملیاتی</option>
-                                    <option>خروج ضایعات</option>
-                                  </select>
+                                     <select [(ngModel)]="selectedProductGroupType">
+                                          <option *ngFor="let type of ProductGroupTypes" [ngValue]="type">
+                                              {{ ProductGroupTypeLabels[type] }}
+                                          </option>
+                                      </select>
                                 </div>
                               </div>
                               </div>
@@ -157,10 +171,11 @@
                                 <div class="col-xl-6 xl-100">
                                   <div class="form-group">
                                     <label class="form-label" for="exampleFormControlInput5">انتخاب انبار: </label>
-                                    <select class="form-select" >
-                                      <option>تولیدی</option>
-                                      <option>غیر تولیدی</option>
-                                    </select>
+                                     <select [(ngModel)]="selectedProductInventoryType">
+                                          <option *ngFor="let type of ProductGroupTypes" [ngValue]="type">
+                                              {{ ProductGroupTypeLabels[type] }}
+                                          </option>
+                                      </select>
                                   </div>
                                 </div>
                               </div>
@@ -257,12 +272,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="tab-pane fade" id="top-profile" role="tabpanel" aria-labelledby="profile-top-tab">
-                  <div class="row">
-                    <app-flowchart-modal></app-flowchart-modal>
-                  </div>
-                </div>
-                
+         
               </div>
             </div>
           </div>
